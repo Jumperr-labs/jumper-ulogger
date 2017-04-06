@@ -1,0 +1,46 @@
+#ifndef LOGGER
+#define LOGGER
+
+#include <stdint.h>
+#include <stdlib.h>
+
+typedef enum EventType {
+    START_ADVERTISING = 0,
+    STOP_ADVERTISING = 1,
+    START_RADIO = 2,
+    STOP_RADIO = 3
+} EventType;
+
+typedef uint32_t timestamp;
+
+typedef void (*handler_func)(EventType event_type, timestamp time, ...);
+
+typedef struct {
+    handler_func* handlers;
+    size_t num_handlers;
+} Logger;
+
+void get_timestamp(timestamp *data);
+
+void logger_init(Logger *logger, handler_func *handlers, size_t num_handlers);
+
+void logger_log(Logger *logger, EventType event_type, ...);
+
+
+#endif
+
+//typedef struct {
+//    handler_func* handler;
+//} HandlerConfig;
+//
+//typedef struct {
+//    HandlerConfig base_config;
+//} NrfBleHandlerConfig;
+//
+//typedef struct {
+//    HandlerConfig base_config;
+//} NrfUartHandlerConfig;
+//
+//typedef union {
+//    NrfBleHandlerConfig;
+//} HandlerPolymorphicConfig;
