@@ -1,5 +1,5 @@
-include_directories(../ulogger)
-link_directories(../ulogger)
+include_directories(../../ulogger)
+link_directories(../../ulogger)
 
 add_executable(my_test_ex test_logger.c)
 

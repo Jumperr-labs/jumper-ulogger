@@ -34,3 +34,5 @@
 .idea/
 .project
 cmake-build-debug/
+_build/
+venv/

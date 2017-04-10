@@ -13,4 +13,4 @@ endif()
 
 add_subdirectory(external)
 add_subdirectory(ulogger)
-add_subdirectory(test)
+add_subdirectory(test/test_module)

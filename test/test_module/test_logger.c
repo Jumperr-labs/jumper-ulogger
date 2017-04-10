@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "unity.h"
-#include "logger.h"
+#include "ulogger.h"
 
 static uint32_t counter = (uint32_t) -1;
 

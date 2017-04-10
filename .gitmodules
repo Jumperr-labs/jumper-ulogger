@@ -1,3 +1,6 @@
 [submodule "external/Unity"]
 	path = external/Unity
 	url = https://github.com/ThrowTheSwitch/Unity.git
+[submodule "nrf5-sdk"]
+	path = external/nrf5-sdk
+	url = https://github.com/Jumperr-labs/nrf5-sdk.git

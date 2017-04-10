@@ -1,13 +1,12 @@
 set(SOURCE_FILES
 #        circular_buffer.c
 #        circular_buffer.h
-        logger.c
-        logger.h
-        logger_config.h
+        ulogger.c
+        ulogger.h
         )
 
 if(${NRF52})
     set(SOURCE_FILES "${SOURCE_FILES} nrf52.c")
 endif()
 
-add_library(ulogger logger.c)
+add_library(ulogger ulogger.c)
