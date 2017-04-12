@@ -10,12 +10,12 @@ typedef struct {
     uint8_t channel;
 } LoggingEventRadioOn;
 
-void logger_init(Logger *logger, handler_func *handlers, size_t num_handlers) {
+void ulogger_init(uLogger *logger, handler_func *handlers, size_t num_handlers) {
     logger->handlers = handlers;
     logger->num_handlers = num_handlers;
 }
 
-void logger_log(Logger *logger, EventType event_type, ...) {
+void ulogger_log(uLogger *logger, EventType event_type, ...) {
     int i;
     handler_func handler;
     timestamp time;

@@ -18,13 +18,13 @@ typedef void (*handler_func)(EventType event_type, timestamp time, ...);
 typedef struct {
     handler_func* handlers;
     size_t num_handlers;
-} Logger;
+} uLogger;
 
 void get_timestamp(timestamp *data);
 
-void logger_init(Logger *logger, handler_func *handlers, size_t num_handlers);
+void ulogger_init(uLogger *logger, handler_func *handlers, size_t num_handlers);
 
-void logger_log(Logger *logger, EventType event_type, ...);
+void ulogger_log(uLogger *logger, EventType event_type, ...);
 
 
 #endif

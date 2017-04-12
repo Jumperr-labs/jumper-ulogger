@@ -77,14 +77,14 @@
 
 const nrf_drv_rtc_t rtc = NRF_DRV_RTC_INSTANCE(0); /**< Declaring an instance of nrf_drv_rtc for RTC0. */
 
-Logger logger;
+uLogger ulogger;
 
 /** @brief: Function for handling the RTC0 interrupts.
  * Triggered on TICK and COMPARE0 match.
  */
 static void rtc_handler(nrf_drv_rtc_int_type_t int_type) 
 {
-    logger_log(&logger, START_RADIO);
+    ulogger_log(&ulogger, START_RADIO);
 }
 
 /** @brief Function configuring gpio for pin toggling.
@@ -145,7 +145,7 @@ int main(void)
 
     rtc_config();
 
-    ulogger_init_nrf52(&logger);
+    ulogger_init_nrf52(&ulogger);
 
     NRF_LOG_INFO("STARTING\r\n");
     while (true)

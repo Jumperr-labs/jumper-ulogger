@@ -14,14 +14,14 @@ void log_handler(EventType event_type, timestamp time, ...) {
 }
 
 void test_sanity(void) {
-    Logger logger;
+    uLogger logger;
     handler_func log_handlers[1] = {&log_handler};
 
-    logger_init(&logger, log_handlers, (size_t) 1);
+    ulogger_init(&logger, log_handlers, (size_t) 1);
 
-    logger_log(&logger, START_RADIO);
+    ulogger_log(&logger, START_RADIO);
     TEST_ASSERT_EQUAL(counter, 0);
-    logger_log(&logger, START_RADIO);
+    ulogger_log(&logger, START_RADIO);
     TEST_ASSERT_EQUAL(counter, 1);
 }
 
