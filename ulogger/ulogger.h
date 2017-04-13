@@ -11,6 +11,16 @@ typedef enum EventType {
     STOP_RADIO = 3
 } EventType;
 
+typedef struct {
+    EventType event_type;
+    uint32_t time;
+} LoggingEvent;
+
+typedef struct {
+    LoggingEvent base_event;
+    uint8_t channel;
+} LoggingEventStartRadio;
+
 typedef uint32_t timestamp;
 
 typedef void (*handler_func)(EventType event_type, timestamp time, ...);

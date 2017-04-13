@@ -1,15 +1,5 @@
 #include "ulogger.h"
 
-typedef struct {
-    EventType event_type;
-    uint32_t time;
-} LoggingEvent;
-
-typedef struct {
-    LoggingEvent base_event;
-    uint8_t channel;
-} LoggingEventRadioOn;
-
 void ulogger_init(uLogger *logger, handler_func *handlers, size_t num_handlers) {
     logger->handlers = handlers;
     logger->num_handlers = num_handlers;
