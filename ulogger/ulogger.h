@@ -1,14 +1,15 @@
-#ifndef LOGGER
-#define LOGGER
+#ifndef ULOGGER
+#define ULOGGER
 
 #include <stdint.h>
 #include <stdlib.h>
 
-typedef enum EventType {
-    START_ADVERTISING = 0,
-    STOP_ADVERTISING = 1,
-    START_RADIO = 2,
-    STOP_RADIO = 3
+typedef enum {
+    NO_EVENT = 0,
+    START_ADVERTISING = 1,
+    STOP_ADVERTISING = 2,
+    START_RADIO = 3,
+    STOP_RADIO = 4
 } EventType;
 
 typedef struct {
@@ -37,20 +38,4 @@ void ulogger_init(uLogger *logger, handler_func *handlers, size_t num_handlers);
 void ulogger_log(uLogger *logger, EventType event_type, ...);
 
 
-#endif
-
-//typedef struct {
-//    handler_func* handler;
-//} HandlerConfig;
-//
-//typedef struct {
-//    HandlerConfig base_config;
-//} NrfBleHandlerConfig;
-//
-//typedef struct {
-//    HandlerConfig base_config;
-//} NrfUartHandlerConfig;
-//
-//typedef union {
-//    NrfBleHandlerConfig;
-//} HandlerPolymorphicConfig;
+#endif // ULOGGER
