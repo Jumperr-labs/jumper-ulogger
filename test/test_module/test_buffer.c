@@ -1,16 +1,10 @@
-#include <stdint.h>
 #include <stdio.h>
-#include <ulogger.h>
-#include <log_buffer.h>
 #include "unity.h"
 #include "unity_fixture.h"
 #include "log_buffer.h"
 
-#define MAX_EVENTS 3
-#define BUFFER_CAPACITY MAX_EVENTS*sizeof(LoggingEvent)
-#define DEFAULT_EVENT {.time = 5, .event_type = STOP_RADIO}
-#define PUSH_DEFAULT_EVENT log_buffer_push_event(&buffer, event.event_type, event.time);
-
+#define BUFFER_CAPACITY 10
+#define MAX_INT_TYPE_IN_BUFFER BUFFER_CAPACITY / sizeof(int)
 TEST_GROUP(TestBuffer);
 
 static LogBuffer buffer;
@@ -32,44 +26,55 @@ TEST(TestBuffer, Test_Init) {
     TEST_ASSERT_EQUAL(buffer_memory, buffer.head);
     TEST_ASSERT_EQUAL(buffer_memory, buffer.tail);
     TEST_ASSERT_EQUAL(0, buffer.size);
+    TEST_ASSERT_EQUAL(buffer.num_empty_bytes_at_end, 0);
 }
 
 TEST(TestBuffer, Test_Push) {
-    LoggingEvent event = DEFAULT_EVENT;
-    PUSH_DEFAULT_EVENT;
-    TEST_ASSERT_EQUAL_MEMORY(&event, buffer.head, sizeof(LoggingEvent));
-    TEST_ASSERT_EQUAL(sizeof(LoggingEvent), buffer.size);
-    TEST_ASSERT_EQUAL(buffer_memory + sizeof(LoggingEvent), buffer.tail);
+    int *item;
+    log_buffer_push(&buffer, (void**) &item, sizeof(int));
+    *item = 10;
+    TEST_ASSERT_EQUAL(buffer.head, item);
+    TEST_ASSERT_EQUAL(sizeof(int), buffer.size);
+    TEST_ASSERT_EQUAL(buffer_memory + sizeof(int), buffer.tail);
 }
 
 TEST(TestBuffer, Test_Pop) {
-    LoggingEvent event = DEFAULT_EVENT;
-    PUSH_DEFAULT_EVENT;
-    log_buffer_push_head(&buffer, sizeof(LoggingEvent));
+    int *item_pushed, *item_poped;
+    log_buffer_push(&buffer, (void**) &item_pushed, sizeof(int));
+    log_buffer_pop(&buffer, (void**) &item_poped, sizeof(int));
+    TEST_ASSERT_EQUAL(item_pushed, item_poped);
     TEST_ASSERT_EQUAL(BUFFER_CAPACITY, buffer.capacity);
     TEST_ASSERT_EQUAL(buffer_memory, buffer.start);
     TEST_ASSERT_EQUAL(buffer_memory + BUFFER_CAPACITY - 1, buffer.end);
-    TEST_ASSERT_EQUAL(buffer_memory + sizeof(LoggingEvent), buffer.head);
-    TEST_ASSERT_EQUAL(buffer_memory + sizeof(LoggingEvent), buffer.tail);
+    TEST_ASSERT_EQUAL(buffer_memory + sizeof(int), buffer.head);
+    TEST_ASSERT_EQUAL(buffer_memory + sizeof(int), buffer.tail);
     TEST_ASSERT_EQUAL(0, buffer.size);
 }
 
-TEST(TestBuffer, Test_Alligned_Circle) {
-    LoggingEvent event = DEFAULT_EVENT;
+TEST(TestBuffer, Test_Circular) {
+    int *item;
 
-    for (int i=0; i < MAX_EVENTS; i++) PUSH_DEFAULT_EVENT;
-    TEST_ASSERT_EQUAL(buffer.start, buffer.tail);
+//    Fill the buffer to the maximum amount of integers possible
+    for (int i = 0; i < MAX_INT_TYPE_IN_BUFFER; i++) {
+        TEST_ASSERT_EQUAL(0, log_buffer_push(&buffer, (void **) &item, sizeof(int)));
+        TEST_ASSERT_EQUAL((int *) buffer_memory + i, item);
+        TEST_ASSERT_EQUAL((i + 1) * sizeof(int), buffer.size);
+        *item = i;
+    };
+    TEST_ASSERT_EQUAL(MAX_INT_TYPE_IN_BUFFER * sizeof(int), buffer.size);
 
-    log_buffer_push_head(&buffer, sizeof(LoggingEvent));
-    TEST_ASSERT_EQUAL(buffer.start + sizeof(LoggingEvent), buffer.head);
-    TEST_ASSERT_EQUAL(BUFFER_CAPACITY - sizeof(LoggingEvent), buffer.size);
+//    Take one item out
+    TEST_ASSERT_EQUAL(0, log_buffer_pop(&buffer, (void **) &item, sizeof(int)));
+    TEST_ASSERT_EQUAL(0, *item);
 
-    PUSH_DEFAULT_EVENT;
-    TEST_ASSERT_EQUAL(buffer.head, buffer.tail);
-    TEST_ASSERT_EQUAL(BUFFER_CAPACITY, buffer.size);
+//    Add one item (first cyclic function)
+    TEST_ASSERT_EQUAL(0, log_buffer_push(&buffer, (void **) &item, sizeof(int)));
+    *item = MAX_INT_TYPE_IN_BUFFER;
+    TEST_ASSERT_EQUAL(buffer_memory, item);
 
-    for (int i=0; i < MAX_EVENTS; i++) log_buffer_push_head(&buffer, sizeof(LoggingEvent));
-    TEST_ASSERT_EQUAL(0, buffer.size);
-    TEST_ASSERT_EQUAL(buffer.tail, buffer.head);
+//    Pop everything out
+    for (int i = 0; i < MAX_INT_TYPE_IN_BUFFER; i++) {
+        TEST_ASSERT_EQUAL(0, log_buffer_pop(&buffer, (void **) &item, sizeof(int)));
+        TEST_ASSERT_EQUAL(*item, i + 1);
+    }
 }
-

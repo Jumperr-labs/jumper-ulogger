@@ -8,7 +8,7 @@ TEST_GROUP_RUNNER(TestBuffer) {
     RUN_TEST_CASE(TestBuffer, Test_Init);
     RUN_TEST_CASE(TestBuffer, Test_Push);
     RUN_TEST_CASE(TestBuffer, Test_Pop);
-    RUN_TEST_CASE(TestBuffer, Test_Alligned_Circle);
+    RUN_TEST_CASE(TestBuffer, Test_Circular);
 }
 
 static void RunAllTests(void)

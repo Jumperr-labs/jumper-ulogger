@@ -12,13 +12,14 @@ typedef struct {
     char *tail;
     size_t size;
     size_t capacity;
+    size_t num_empty_bytes_at_end;
 } LogBuffer;
 
-void log_buffer_init(LogBuffer* buffer, char* start, size_t buffer_capacity);
+int log_buffer_init(LogBuffer* buffer, char* start, size_t buffer_capacity);
 
-void log_buffer_push_event(LogBuffer* buffer, EventType event_type, timestamp time, ...);
+int log_buffer_push(LogBuffer* buffer, void** item, size_t item_size);
 
-void log_buffer_push_head(LogBuffer *buffer, size_t size_to_move);
+int log_buffer_pop(LogBuffer *buffer, void** item, size_t item_size);
 
 
 #endif //LOG_BUFFER
