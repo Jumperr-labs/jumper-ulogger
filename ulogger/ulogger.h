@@ -1,8 +1,8 @@
-#ifndef ULOGGER
-#define ULOGGER
-
 #include <stdint.h>
 #include <stdlib.h>
+
+#ifndef ULOGGER
+#define ULOGGER
 
 typedef enum {
     NO_EVENT = 0,
@@ -26,6 +26,7 @@ typedef uint32_t timestamp;
 
 typedef void (*handler_func)(EventType event_type, timestamp time, ...);
 
+
 typedef struct {
     handler_func* handlers;
     size_t num_handlers;
@@ -33,9 +34,9 @@ typedef struct {
 
 void get_timestamp(timestamp *data);
 
-void ulogger_init(uLogger *logger, handler_func *handlers, size_t num_handlers);
+void ulogger_init(uLogger *ulogger, handler_func *handlers, size_t num_handlers);
 
-void ulogger_log(uLogger *logger, EventType event_type, ...);
+void ulogger_log(uLogger *ulogger, EventType event_type, ...);
 
 
 #endif // ULOGGER

@@ -22,20 +22,17 @@ TEST_TEAR_DOWN(TestUbuffer) {
 TEST(TestUbuffer, Test_Init) {
     TEST_ASSERT_EQUAL(BUFFER_CAPACITY, ubuffer.capacity);
     TEST_ASSERT_EQUAL(buffer_memory, ubuffer.start);
-    TEST_ASSERT_EQUAL(buffer_memory + BUFFER_CAPACITY - 1, ubuffer.end);
-    TEST_ASSERT_EQUAL(buffer_memory, ubuffer.head);
-    TEST_ASSERT_EQUAL(buffer_memory, ubuffer.tail);
+    TEST_ASSERT_EQUAL(0, ubuffer.head);
     TEST_ASSERT_EQUAL(0, ubuffer.size);
-    TEST_ASSERT_EQUAL(ubuffer.num_empty_bytes_at_end, 0);
+    TEST_ASSERT_EQUAL(0, ubuffer.num_empty_bytes_at_end);
 }
 
 TEST(TestUbuffer, Test_Push) {
     int *item;
     ubuffer_push(&ubuffer, (void **) &item, sizeof(int));
     *item = 10;
-    TEST_ASSERT_EQUAL(ubuffer.head, item);
+    TEST_ASSERT_EQUAL(ubuffer.start, item);
     TEST_ASSERT_EQUAL(sizeof(int), ubuffer.size);
-    TEST_ASSERT_EQUAL(buffer_memory + sizeof(int), ubuffer.tail);
 }
 
 TEST(TestUbuffer, Test_Pop) {
@@ -45,9 +42,7 @@ TEST(TestUbuffer, Test_Pop) {
     TEST_ASSERT_EQUAL(item_pushed, item_poped);
     TEST_ASSERT_EQUAL(BUFFER_CAPACITY, ubuffer.capacity);
     TEST_ASSERT_EQUAL(buffer_memory, ubuffer.start);
-    TEST_ASSERT_EQUAL(buffer_memory + BUFFER_CAPACITY - 1, ubuffer.end);
-    TEST_ASSERT_EQUAL(buffer_memory + sizeof(int), ubuffer.head);
-    TEST_ASSERT_EQUAL(buffer_memory + sizeof(int), ubuffer.tail);
+    TEST_ASSERT_EQUAL(sizeof(int), ubuffer.head);
     TEST_ASSERT_EQUAL(0, ubuffer.size);
 }
 
