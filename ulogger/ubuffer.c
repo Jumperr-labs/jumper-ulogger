@@ -3,7 +3,7 @@
 
 #define START_OF_EMPTY_BYTES(buffer) buffer->end - buffer->num_empty_bytes_at_end + 1
 
-int ubuffer_init(uBuffer *ubuffer, char *start, size_t buffer_capacity) {
+uBuffer_Error_Code ubuffer_init(uBuffer *ubuffer, char *start, size_t buffer_capacity) {
     ubuffer->start = start;
 	ubuffer->end = start + buffer_capacity - 1;
 	ubuffer->head = start;
@@ -11,12 +11,12 @@ int ubuffer_init(uBuffer *ubuffer, char *start, size_t buffer_capacity) {
     ubuffer->size = 0;
 	ubuffer->capacity = buffer_capacity;
     ubuffer->num_empty_bytes_at_end = 0;
-    return 0;
+    return UBUFFER_SUCCESS;
 }
 
-int ubuffer_push(uBuffer *ubuffer, void **item, size_t item_size) {
+uBuffer_Error_Code ubuffer_push(uBuffer *ubuffer, void **item, size_t item_size) {
     if (ubuffer->size + item_size > ubuffer->capacity) {
-        return 1;
+        return UBUFFER_FULL;
     }
 
     if (ubuffer->tail + item_size - 1 > ubuffer->end) {
@@ -24,7 +24,7 @@ int ubuffer_push(uBuffer *ubuffer, void **item, size_t item_size) {
         num_empty_bytes_at_end = ubuffer->end - ubuffer->tail + 1;
         new_buffer_size = ubuffer->size + ubuffer->num_empty_bytes_at_end;
         if (new_buffer_size + item_size > ubuffer->capacity) {
-            return 2;
+            return UBUFFER_FULL;
         }
 
         ubuffer->num_empty_bytes_at_end = num_empty_bytes_at_end;
@@ -41,12 +41,12 @@ int ubuffer_push(uBuffer *ubuffer, void **item, size_t item_size) {
         ubuffer->tail = ubuffer->start;
     }
 
-    return 0;
+    return UBUFFER_SUCCESS;
 }
 
-int ubuffer_pop(uBuffer *ubuffer, void **item, size_t item_size) {
+uBuffer_Error_Code ubuffer_pop(uBuffer *ubuffer, void **item, size_t item_size) {
     if (ubuffer->size < item_size) {
-        return 1;
+        return UBUFFER_EMPTY;
     }
 
     *item = (void*) ubuffer->head;
@@ -60,5 +60,5 @@ int ubuffer_pop(uBuffer *ubuffer, void **item, size_t item_size) {
 
     ubuffer->size -= item_size;
 
-    return 0;
+    return UBUFFER_SUCCESS;
 }
