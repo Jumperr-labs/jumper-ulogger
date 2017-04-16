@@ -26,7 +26,6 @@ typedef uint32_t timestamp;
 
 typedef void (*handler_func)(EventType event_type, timestamp time, ...);
 
-
 typedef struct {
     handler_func* handlers;
     size_t num_handlers;
@@ -38,5 +37,6 @@ void ulogger_init(uLogger *ulogger, handler_func *handlers, size_t num_handlers)
 
 void ulogger_log(uLogger *ulogger, EventType event_type, ...);
 
+void ulogger_log_existing_event(uLogger *ulogger, LoggingEvent *event, ...);
 
 #endif // ULOGGER

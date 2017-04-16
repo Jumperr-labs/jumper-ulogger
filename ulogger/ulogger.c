@@ -1,5 +1,4 @@
 #include "ulogger.h"
-#include "ubuffer.h"
 
 void ulogger_init(uLogger *ulogger, handler_func *handlers, size_t num_handlers) {
     ulogger->handlers = handlers;
@@ -7,13 +6,18 @@ void ulogger_init(uLogger *ulogger, handler_func *handlers, size_t num_handlers)
 }
 
 void ulogger_log(uLogger *ulogger, EventType event_type, ...) {
-    int i;
-    handler_func handler;
     timestamp time;
+    LoggingEvent event;
 
-    get_timestamp(&time);
-    for (i=0; i < ulogger->num_handlers; ++i) {
+    event.event_type = event_type;
+    get_timestamp(&(event.time));
+    ulogger_log_existing_event(ulogger, &event);
+}
+
+void ulogger_log_existing_event(uLogger *ulogger, LoggingEvent* event, ...) {
+    handler_func handler;
+    for (int i=0; i < ulogger->num_handlers; ++i) {
         handler = ulogger->handlers[i];
-        (*handler)(event_type, time);
+        (*handler)(event->event_type, event->time);
     }
 }

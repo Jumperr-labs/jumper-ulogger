@@ -3,6 +3,8 @@ set(SOURCE_FILES
         ubuffer.h
         ulogger.c
         ulogger.h
+        ulogger_async.c
+        ulogger_async.h
         )
 
 add_library(ulogger ${SOURCE_FILES})
