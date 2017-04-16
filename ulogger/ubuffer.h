@@ -7,9 +7,7 @@
 
 typedef struct {
     char *start;
-    char *end;
-    char *head;
-    char *tail;
+    size_t head;
     size_t size;
     size_t capacity;
     size_t num_empty_bytes_at_end;
