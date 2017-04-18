@@ -3,7 +3,6 @@
 #define NRF_LOG_MODULE_NAME "ULOGGER"
 #include "nrf_log.h"
 #include "ulogger_nrf52.h"
-#include "ulogger_config.h"
 
 static const nrf_drv_rtc_t rtc_log = NRF_DRV_RTC_INSTANCE(ULOGGER_RTC);
 void log_handler(EventType event_type, timestamp time, ...);
@@ -55,7 +54,7 @@ void get_timestamp(timestamp* time)
     *time = (timestamp) nrf_drv_rtc_counter_get(&rtc_log) / 16;
 }
 
-void ulogger_init_nrf52(Logger* logger) {
+void ulogger_init_nrf52(uLogger* logger) {
     rtc_config();
-    logger_init(logger, log_handlers, (size_t) 1);
+    ulogger_init(logger, log_handlers, (size_t) 1);
 }

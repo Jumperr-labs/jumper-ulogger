@@ -5,6 +5,6 @@
 
 #define ULOGGER_RTC 2
 
-void ulogger_init_nrf52(Logger* logger);
+void ulogger_init_nrf52(uLogger* logger);
 
 #endif
