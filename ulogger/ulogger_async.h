@@ -6,7 +6,7 @@
 
 // Currently the same as uBufferErrorCode in ubuffer.h
 typedef enum {
-    uLogger_Async_Sucess = 0,
+    uLogger_Async_Success = 0,
     uLogger_Async_Buffer_Full = 1,
     uLogger_Async_Buffer_Empty = 2
 } uLoggerAsyncErrorCode;
