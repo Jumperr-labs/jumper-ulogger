@@ -25,9 +25,10 @@ void log_handler(EventType event_type, timestamp time, ...) {
 
 TEST(TestLogger, Test_Sanity) {
     uLogger logger;
+    void* handler_data[] = {NULL};
     handler_func log_handlers[1] = {&log_handler};
 
-    ulogger_init(&logger, log_handlers, (size_t) 1);
+    ulogger_init(&logger, log_handlers, handler_data, (size_t) 1);
 
     ulogger_log(&logger, START_RADIO);
     TEST_ASSERT_EQUAL(counter, 0);
