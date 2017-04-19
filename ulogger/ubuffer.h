@@ -1,9 +1,9 @@
+#ifndef UBUFFER
+#define UBUFFER
+
 #include <stdint.h>
 #include <stdlib.h>
 #include "ulogger.h"
-
-#ifndef UBUFFER
-#define UBUFFER
 
 typedef struct {
     char *start;
@@ -17,13 +17,13 @@ typedef enum {
     UBUFFER_SUCCESS = 0,
     UBUFFER_FULL,
     UBUFFER_EMPTY,
-} uBuffer_Error_Code;
+} uBufferErrorCode;
 
-uBuffer_Error_Code ubuffer_init(uBuffer *ubuffer, char *start, size_t buffer_capacity);
+uBufferErrorCode ubuffer_init(uBuffer *ubuffer, char *start, size_t buffer_capacity);
 
-uBuffer_Error_Code ubuffer_push(uBuffer *ubuffer, void **item, size_t item_size);
+uBufferErrorCode ubuffer_push(uBuffer *ubuffer, void **item, size_t item_size);
 
-uBuffer_Error_Code ubuffer_pop(uBuffer *ubuffer, void **item, size_t item_size);
+uBufferErrorCode ubuffer_pop(uBuffer *ubuffer, void **item, size_t item_size);
 
 
 #endif //UBUFFER

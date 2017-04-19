@@ -1,9 +1,9 @@
 #include <string.h>
 #include "ubuffer.h"
 
-#define START_OF_EMPTY_BYTES(buffer) buffer->capacity - buffer->num_empty_bytes_at_end
+#define START_OF_EMPTY_BYTES(buffer) (buffer->capacity - buffer->num_empty_bytes_at_end)
 
-uBuffer_Error_Code ubuffer_init(uBuffer *ubuffer, char *start, size_t buffer_capacity) {
+uBufferErrorCode ubuffer_init(uBuffer *ubuffer, char *start, size_t buffer_capacity) {
     ubuffer->start = start;
 	ubuffer->head = 0;
 	ubuffer->size = 0;
@@ -12,7 +12,7 @@ uBuffer_Error_Code ubuffer_init(uBuffer *ubuffer, char *start, size_t buffer_cap
     return UBUFFER_SUCCESS;
 }
 
-uBuffer_Error_Code ubuffer_push(uBuffer *ubuffer, void **item, size_t item_size) {
+uBufferErrorCode ubuffer_push(uBuffer *ubuffer, void **item, size_t item_size) {
     size_t item_location;
 
     if (ubuffer->size + item_size > ubuffer->capacity) {
@@ -38,7 +38,7 @@ uBuffer_Error_Code ubuffer_push(uBuffer *ubuffer, void **item, size_t item_size)
     return UBUFFER_SUCCESS;
 }
 
-uBuffer_Error_Code ubuffer_pop(uBuffer *ubuffer, void **item, size_t item_size) {
+uBufferErrorCode ubuffer_pop(uBuffer *ubuffer, void **item, size_t item_size) {
     if (ubuffer->size < item_size) {
         return UBUFFER_EMPTY;
     }

@@ -4,7 +4,7 @@
 #include "ubuffer.h"
 
 #define BUFFER_CAPACITY 10
-#define MAX_INT_TYPE_IN_BUFFER BUFFER_CAPACITY / sizeof(int)
+#define MAX_INT_TYPE_IN_BUFFER (BUFFER_CAPACITY / sizeof(int))
 TEST_GROUP(TestUbuffer);
 
 static uBuffer ubuffer;
