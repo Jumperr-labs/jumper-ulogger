@@ -1,8 +1,8 @@
-#include <stdint.h>
-#include "ulogger.h"
-
 #ifndef JUMPER_ULOGGER_MOCK_USER_HANDLERS_H
 #define JUMPER_ULOGGER_MOCK_USER_HANDLERS_H
+
+#include <stdint.h>
+#include "ulogger.h"
 
 #define NUM_HANDLERS 1
 
@@ -12,7 +12,7 @@ void get_timestamp(timestamp *data);
 
 void log_handler(EventType event_type, timestamp time, ...);
 
-void test_counters(uint32_t expected_value);
+void assert_counters(uint32_t expected_value);
 
 void* handler_data[NUM_HANDLERS];
 

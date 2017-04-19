@@ -11,15 +11,10 @@ TEST_GROUP_RUNNER(TestUbuffer) {
     RUN_TEST_CASE(TestUbuffer, Test_Circular);
 }
 
-TEST_GROUP_RUNNER(TestAsyncLogger) {
-    RUN_TEST_CASE(TestAsyncLogger, Test_Sanity);
-}
-
 static void RunAllTests(void)
 {
     RUN_TEST_GROUP(TestLogger);
     RUN_TEST_GROUP(TestUbuffer);
-    RUN_TEST_GROUP(TestAsyncLogger);
 }
 
 int main(int argc, const char * argv[])

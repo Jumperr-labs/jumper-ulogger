@@ -1,9 +1,9 @@
+#ifndef UBUFFER
+#define UBUFFER
+
 #include <stdint.h>
 #include <stdlib.h>
 #include "ulogger.h"
-
-#ifndef UBUFFER
-#define UBUFFER
 
 typedef struct {
     char *start;

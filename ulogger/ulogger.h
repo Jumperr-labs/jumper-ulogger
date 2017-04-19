@@ -1,8 +1,8 @@
-#include <stdint.h>
-#include <stdlib.h>
-
 #ifndef ULOGGER
 #define ULOGGER
+
+#include <stdint.h>
+#include <stdlib.h>
 
 typedef enum {
     NO_EVENT = 0,
@@ -12,15 +12,15 @@ typedef enum {
     STOP_RADIO = 4
 } EventType;
 
-typedef struct {
-    EventType event_type;
-    uint32_t time;
-} LoggingEvent;
+//typedef struct {
+//    EventType event_type;
+//    uint32_t time;
+//} LoggingEvent;
 
-typedef struct {
-    LoggingEvent base_event;
-    uint8_t channel;
-} LoggingEventStartRadio;
+//typedef struct {
+//    LoggingEvent base_event;
+//    uint8_t channel;
+//} LoggingEventStartRadio;
 
 typedef uint32_t timestamp;
 
@@ -37,7 +37,5 @@ void get_timestamp(timestamp *data);
 void ulogger_init(uLogger *ulogger, handler_func *handlers, void** handlers_data, size_t num_handlers);
 
 void ulogger_log(uLogger *ulogger, EventType event_type, ...);
-
-void ulogger_log_existing_event(uLogger *ulogger, LoggingEvent *event, ...);
 
 #endif // ULOGGER
