@@ -24,16 +24,17 @@ typedef struct {
 
 typedef uint32_t timestamp;
 
-typedef void (*handler_func)(EventType event_type, timestamp time, ...);
+typedef void (*handler_func)(EventType event_type, timestamp time, void* handler_data, ...);
 
 typedef struct {
     handler_func* handlers;
+    void** handlers_data;
     size_t num_handlers;
 } uLogger;
 
 void get_timestamp(timestamp *data);
 
-void ulogger_init(uLogger *ulogger, handler_func *handlers, size_t num_handlers);
+void ulogger_init(uLogger *ulogger, handler_func *handlers, void** handlers_data, size_t num_handlers);
 
 void ulogger_log(uLogger *ulogger, EventType event_type, ...);
 

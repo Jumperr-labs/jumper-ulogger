@@ -1,10 +1,9 @@
 #include "ulogger_async.h"
 
 
-uLoggerAsyncErrorCode ulogger_async_init(
-        uLoggerAsync* ulogger_async, char* start, size_t buffer_capacity, handler_func *handlers, size_t num_handlers
-) {
-    ulogger_init(ulogger_async->ulogger, handlers, num_handlers);
+uLoggerAsyncErrorCode ulogger_async_init(uLoggerAsync *ulogger_async, char *start, size_t buffer_capacity, handler_func *handlers,
+                                         void** handlers_data, size_t num_handlers) {
+    ulogger_init(ulogger_async->ulogger, handlers, handlers_data, num_handlers);
     ubuffer_init(ulogger_async->ubuffer, start, buffer_capacity);
 }
 

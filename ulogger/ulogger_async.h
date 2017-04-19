@@ -18,9 +18,8 @@ typedef struct {
     size_t num_handlers;
 } uLoggerAsync;
 
-uLoggerAsyncErrorCode ulogger_async_init(
-        uLoggerAsync* ulogger_async, char* start, size_t buffer_capacity, handler_func *handlers, size_t num_handlers
-);
+uLoggerAsyncErrorCode ulogger_async_init(uLoggerAsync *ulogger_async, char *start, size_t buffer_capacity, handler_func *handlers,
+                                         void** handlers_data, size_t num_handlers);
 
 uLoggerAsyncErrorCode async_logger_log_event(uLoggerAsync *ulogger_async, EventType event_type, timestamp time, ...);
 
