@@ -62,6 +62,7 @@ SRC_FILES += \
   $(SDK_ROOT)/components/toolchain/system_nrf52.c \
   $(SDK_ROOT)/components/softdevice/common/softdevice_handler/softdevice_handler.c \
   $(PLATFORM_DIR)/trace_nrf52.c \
+  $(PLATFORM_DIR)/gatt_handler.c \
   $(ULOGGER_DIR)/ulogger.c \
   $(ULOGGER_DIR)/ulogger_nrf52.c
 

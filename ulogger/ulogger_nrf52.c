@@ -1,15 +1,23 @@
 #include <stdint.h>
 #include "nrf_drv_rtc.h"
+
 #define NRF_LOG_MODULE_NAME "ULOGGER"
 #include "nrf_log.h"
 #include "ulogger_nrf52.h"
+#include "gatt_handler.h"
+#include "trace_nrf52.h"
 
 static const nrf_drv_rtc_t rtc_log = NRF_DRV_RTC_INSTANCE(ULOGGER_RTC);
-void log_handler(EventType event_type, timestamp time, ...);
-static handler_func log_handlers[1] = {&log_handler};
+HandlerReturnType log_handler(EventType event_type, timestamp time, void * handler_data, ...);
 
-void log_handler(EventType event_type, timestamp time, ...) {
+uLoggerGattHandler gatt_handler_state;
+
+static handler_func log_handlers[] = {&log_handler, &gatt_handler_handle_log};
+static void * handler_data[] = {NULL, &gatt_handler_state};
+
+HandlerReturnType log_handler(EventType event_type, timestamp time, void * handler_data, ...) {
     NRF_LOG_INFO("Event: %d\r\nTime: %d\r\n", event_type, time);
+    return HANDLER_SUCCESS;
 }
 
 static void rtc_handler(nrf_drv_rtc_int_type_t int_type) 
@@ -55,6 +63,16 @@ void get_timestamp(timestamp* time)
 }
 
 void ulogger_init_nrf52(uLogger* logger) {
+    uint32_t err_code;
     rtc_config();
-    ulogger_init(logger, log_handlers, (size_t) 1);
+    err_code = gatt_handler_init(&gatt_handler_state);
+    NRF_LOG_INFO("Got res %d\n", err_code);
+    ulogger_init(logger, log_handlers, handler_data, (size_t) 2);
+}
+
+
+void ulogger_handle_ble_event(ble_evt_t * p_ble_evt) {
+
+    gatt_handler_handle_ble_event(p_ble_evt, &gatt_handler_state);
+    ulogger_trace_nrf_ble_event(p_ble_evt);
 }

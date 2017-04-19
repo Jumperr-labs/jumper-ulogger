@@ -83,7 +83,6 @@
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
 
-
 #define APP_FEATURE_NOT_SUPPORTED       BLE_GATT_STATUS_ATTERR_APP_BEGIN + 2    /**< Reply when unsupported features are requested. */
 
 #define DEVICE_NAME                     "Nordic_Template"                       /**< Name of device. Will be included in the advertising data. */
@@ -113,6 +112,8 @@
 
 static uint16_t       m_conn_handle = BLE_CONN_HANDLE_INVALID;                  /**< Handle of the current connection. */
 static nrf_ble_gatt_t m_gatt;                                                   /**< GATT module instance. */
+
+APP_TIMER_DEF(log_generating_timer);
 
 /* YOUR_JOB: Declare all services structure your application is using
    static ble_xx_service_t                     m_xxs;
@@ -243,6 +244,12 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
 }
 
 
+static void log_generating_function(void * p_context)
+{
+    UNUSED_PARAMETER(p_context);
+    ulogger_log(&ulogger, START_RADIO);
+}
+
 /**@brief Function for the Timer initialization.
  *
  * @details Initializes the timer module. This creates and starts application timers.
@@ -253,6 +260,11 @@ static void timers_init(void)
     ret_code_t err_code = app_timer_init();
     APP_ERROR_CHECK(err_code);
 
+
+
+    err_code = app_timer_create(&log_generating_timer,
+                                APP_TIMER_MODE_REPEATED,
+                                log_generating_function);
     // Create timers.
 
     /* YOUR_JOB: Create any timers to be used by the application.
@@ -423,11 +435,9 @@ static void conn_params_init(void)
  */
 static void application_timers_start(void)
 {
-    /* YOUR_JOB: Start your timers. below is an example of how to start a timer.
-       ret_code_t err_code;
-       err_code = app_timer_start(m_app_timer_id, TIMER_INTERVAL, NULL);
-       APP_ERROR_CHECK(err_code); */
-
+    ret_code_t err_code;
+    err_code = app_timer_start(log_generating_timer, APP_TIMER_TICKS(2000)  , NULL);
+    APP_ERROR_CHECK(err_code);
 }
 
 
@@ -579,8 +589,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
     on_ble_evt(p_ble_evt);
     ble_advertising_on_ble_evt(p_ble_evt);
     nrf_ble_gatt_on_ble_evt(&m_gatt, p_ble_evt);
-
-    ulogger_trace_nrf_ble_event(p_ble_evt);
+    ulogger_handle_ble_event(p_ble_evt);
     /*YOUR_JOB add calls to _on_ble_evt functions from each service your application is using
        ble_xxs_on_ble_evt(&m_xxs, p_ble_evt);
        ble_yys_on_ble_evt(&m_yys, p_ble_evt);
@@ -630,7 +639,7 @@ static void ble_stack_init(void)
     ble_cfg_t ble_cfg;
 
     memset(&ble_cfg, 0, sizeof(ble_cfg));
-    ble_cfg.common_cfg.vs_uuid_cfg.vs_uuid_count = 0;
+    ble_cfg.common_cfg.vs_uuid_cfg.vs_uuid_count = 1;
     err_code = sd_ble_cfg_set(BLE_COMMON_CFG_VS_UUID, &ble_cfg, ram_start);
     APP_ERROR_CHECK(err_code);
 
@@ -831,7 +840,6 @@ int main(void)
 {
     bool erase_bonds;
 
-    ulogger_init_nrf52(&ulogger);
     // Initialize.
     log_init();
     timers_init();
@@ -840,10 +848,13 @@ int main(void)
     gap_params_init();
     gatt_init();
     advertising_init();
+
+
     services_init();
     conn_params_init();
     peer_manager_init();
 
+    ulogger_init_nrf52(&ulogger);
     // Start execution.
     NRF_LOG_INFO("Template example started.\r\n");
     application_timers_start();

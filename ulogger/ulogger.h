@@ -17,6 +17,11 @@ typedef struct {
     uint32_t time;
 } LoggingEvent;
 
+typedef enum {
+    HANDLER_SUCCESS = 0,
+    HANDLER_FAILED
+} HandlerReturnType;
+
 typedef struct {
     LoggingEvent base_event;
     uint8_t channel;
@@ -24,7 +29,7 @@ typedef struct {
 
 typedef uint32_t timestamp;
 
-typedef void (*handler_func)(EventType event_type, timestamp time, void* handler_data, ...);
+typedef HandlerReturnType (*handler_func)(EventType event_type, timestamp time, void* handler_data, ...);
 
 
 typedef struct {
