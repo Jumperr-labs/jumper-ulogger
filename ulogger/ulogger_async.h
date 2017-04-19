@@ -21,9 +21,9 @@ typedef struct {
 uLoggerAsyncErrorCode ulogger_async_init(uLoggerAsync *ulogger_async, char *start, size_t buffer_capacity, handler_func *handlers,
                                          void** handlers_data, size_t num_handlers);
 
-uLoggerAsyncErrorCode async_logger_log_event(uLoggerAsync *ulogger_async, EventType event_type, timestamp time, ...);
+uLoggerAsyncErrorCode ulogger_async_log_event(uLoggerAsync *ulogger_async, EventType event_type, ...);
 
-uLoggerAsyncErrorCode async_logger_flush(uLoggerAsync *ulogger_async);
+uLoggerAsyncErrorCode ulogger_async_flush(uLoggerAsync *ulogger_async);
 
 
 #endif //ULOGGER_ASYNC

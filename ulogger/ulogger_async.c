@@ -1,6 +1,5 @@
 #include "ulogger_async.h"
 
-
 uLoggerAsyncErrorCode ulogger_async_init(uLoggerAsync *ulogger_async, char *start, size_t buffer_capacity, handler_func *handlers,
                                          void** handlers_data, size_t num_handlers) {
     ulogger_init(ulogger_async->ulogger, handlers, handlers_data, num_handlers);
@@ -8,8 +7,7 @@ uLoggerAsyncErrorCode ulogger_async_init(uLoggerAsync *ulogger_async, char *star
     return uLogger_Async_Sucess;
 }
 
-uLoggerAsyncErrorCode async_logger_log_event(uLoggerAsync *ulogger_async, EventType event_type, timestamp time,
-                                                  ...) {
+uLoggerAsyncErrorCode ulogger_async_log_event(uLoggerAsync *ulogger_async, EventType event_type, ...) {
     LoggingEvent* event;
     uBufferErrorCode err_code;
 
@@ -17,12 +15,12 @@ uLoggerAsyncErrorCode async_logger_log_event(uLoggerAsync *ulogger_async, EventT
     if (err_code) return (uLoggerAsyncErrorCode) err_code;
 
     event->event_type = event_type;
-    event->time = time;
+    get_timestamp(&(event->time));
 
     return uLogger_Async_Sucess;
 }
 
-uLoggerAsyncErrorCode async_logger_flush(uLoggerAsync *ulogger_async) {
+uLoggerAsyncErrorCode ulogger_async_flush(uLoggerAsync *ulogger_async) {
     uBufferErrorCode err_code;
     LoggingEvent* event;
     while (ulogger_async->ubuffer->size) {

@@ -1,8 +1,6 @@
-#include <stdint.h>
-#include <stdio.h>
 #include "unity_fixture.h"
-#include "ulogger.h"
 #include "mock_user_handlers.h"
+#include "ulogger.h"
 
 TEST_GROUP(TestLogger);
 
