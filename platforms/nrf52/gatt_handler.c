@@ -127,11 +127,8 @@ void gatt_handler_handle_ble_event(ble_evt_t *p_ble_evt, uLoggerGattHandler * ha
             break;
     }
 }
-static EventType t;
-HandlerReturnType gatt_handler_handle_log(EventType event_type, timestamp time, void* handler_data, ...) {
-    uLoggerGattHandler *p_handler_state = (uLoggerGattHandler *)handler_data;
-    uint32_t err_code;
 
+static uint32_t send_buffer(void) {
     if (p_handler_state->connection_handle != BLE_CONN_HANDLE_INVALID) {
         uint16_t len = 4;
         uint16_t hvx_len = len;
@@ -145,14 +142,20 @@ HandlerReturnType gatt_handler_handle_log(EventType event_type, timestamp time, 
 
         err_code = sd_ble_gatts_hvx(p_handler_state->connection_handle, &hvx_params);
 
-        if ((err_code == NRF_SUCCESS) && (hvx_len != len)) {
-            return HANDLER_FAILED;
-        } else if (err_code == NRF_SUCCESS) {
+        if (err_code == NRF_SUCCESS) {
             return HANDLER_SUCCESS;
         } else {
-            return HANDLER_FAILED;
+            return err_code;
         }
     } else {
-        return HANDLER_FAILED;
+        return 1;
     }
+}
+
+static EventType t;
+HandlerReturnType gatt_handler_handle_log(EventType event_type, timestamp time, void* handler_data, ...) {
+    uLoggerGattHandler *p_handler_state = (uLoggerGattHandler *)handler_data;
+    uint32_t err_code;
+
+   
 }

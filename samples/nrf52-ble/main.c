@@ -77,7 +77,7 @@
 #include "nrf_ble_gatt.h"
 #include "ulogger.h"
 #include "ulogger_nrf52.h"
-#include "../../platforms/nrf52/trace_nrf52.h"
+#include "trace_nrf52.h"
 
 #define NRF_LOG_MODULE_NAME "APP"
 #include "nrf_log.h"
