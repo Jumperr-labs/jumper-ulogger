@@ -13,7 +13,7 @@ uBufferErrorCode ubuffer_init(void *ubuffer, char *start, size_t buffer_capacity
     return UBUFFER_SUCCESS;
 }
 
-uBufferErrorCode ubuffer_push(void *ubuffer, void **item, size_t item_size) {
+uBufferErrorCode ubuffer_allocate_next(void *ubuffer, void **item, size_t item_size) {
     uBuffer *ubuffer_handle = ubuffer;
     size_t item_location;
 
@@ -45,13 +45,12 @@ uBufferErrorCode ubuffer_push(void *ubuffer, void **item, size_t item_size) {
     return UBUFFER_SUCCESS;
 }
 
-uBufferErrorCode ubuffer_pop(void *ubuffer, void **item, size_t item_size) {
+uBufferErrorCode ubuffer_free_first(void *ubuffer, void **item, size_t item_size) {
     uBuffer *ubuffer_handle = ubuffer;
-    if (ubuffer_handle->size < item_size) {
-        return UBUFFER_EMPTY;
-    }
+    uBufferErrorCode err_code;
 
-    *item = (void*) ubuffer_handle->start + ubuffer_handle->head;
+    err_code = ubuffer_peek_first(ubuffer, item, item_size);
+    if (err_code) return err_code;
 
     ubuffer_handle->head += item_size;
     ubuffer_handle->size -= item_size;
@@ -61,6 +60,18 @@ uBufferErrorCode ubuffer_pop(void *ubuffer, void **item, size_t item_size) {
         ubuffer_handle->size -= ubuffer_handle->num_empty_bytes_at_end;
         ubuffer_handle->num_empty_bytes_at_end = 0;
     }
+
+    return UBUFFER_SUCCESS;
+}
+
+uBufferErrorCode ubuffer_peek_first(void *ubuffer, void **item, size_t item_size) {
+    uBuffer *ubuffer_handle = ubuffer;
+    if (item_size != 0 && (ubuffer_handle->size < item_size || START_OF_EMPTY_BYTES(ubuffer_handle) <= ubuffer_handle->head + item_size - 1))
+    {
+        return UBUFFER_EMPTY;
+    }
+
+    *item = (void*) ubuffer_handle->start + ubuffer_handle->head;
 
     return UBUFFER_SUCCESS;
 }
