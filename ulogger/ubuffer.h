@@ -13,17 +13,20 @@ typedef struct {
     size_t num_empty_bytes_at_end;
 } uBuffer;
 
+#define SIZEOF_UBUFFER sizeof(uBuffer)
+
 typedef enum {
     UBUFFER_SUCCESS = 0,
     UBUFFER_FULL,
-    UBUFFER_EMPTY,
+    UBUFFER_EMPTY
 } uBufferErrorCode;
 
-uBufferErrorCode ubuffer_init(uBuffer *ubuffer, char *start, size_t buffer_capacity);
+uBufferErrorCode ubuffer_init(void *ubuffer, char *start, size_t buffer_capacity);
 
-uBufferErrorCode ubuffer_push(uBuffer *ubuffer, void **item, size_t item_size);
+uBufferErrorCode ubuffer_allocate_next(void *ubuffer, void **item, size_t item_size);
 
-uBufferErrorCode ubuffer_pop(uBuffer *ubuffer, void **item, size_t item_size);
+uBufferErrorCode ubuffer_free_first(void *ubuffer, void **item, size_t item_size);
 
+uBufferErrorCode ubuffer_peek_first(void *ubuffer, void **item, size_t item_size);
 
 #endif //UBUFFER

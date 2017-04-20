@@ -14,11 +14,12 @@ void get_timestamp(timestamp *data) {
     *data = (timestamp) ++timestamp_counter;
 }
 
-void log_handler(EventType event_type, timestamp time, ...) {
+HandlerReturnType log_handler(EventType event_type, timestamp time, ...) {
     log_handler_counter = (uint32_t) time;
+    return HANDLER_SUCCESS;
 }
 
-void test_counters(uint32_t expected_value) {
+void assert_counters(uint32_t expected_value) {
     TEST_ASSERT_EQUAL(expected_value, timestamp_counter);
     TEST_ASSERT_EQUAL(expected_value, log_handler_counter);
 }

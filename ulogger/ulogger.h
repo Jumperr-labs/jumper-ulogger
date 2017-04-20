@@ -5,6 +5,11 @@
 #include <stdlib.h>
 
 typedef enum {
+    ULOGGER_SUCCESS = 0,
+    ULOGGER_FAIL
+} uLoggerErrorCode;
+
+typedef enum {
     NO_EVENT = 0,
     START_ADVERTISING = 1,
     STOP_ADVERTISING = 2,
@@ -12,24 +17,14 @@ typedef enum {
     STOP_RADIO = 4
 } EventType;
 
-//typedef struct {
-//    EventType event_type;
-//    uint32_t time;
-//} LoggingEvent;
-
 typedef enum {
     HANDLER_SUCCESS = 0,
-    HANDLER_FAILED
+    HANDLER_FAIL
 } HandlerReturnType;
-
-//typedef struct {
-//    LoggingEvent base_event;
-//    uint8_t channel;
-//} LoggingEventStartRadio;
 
 typedef uint32_t timestamp;
 
-typedef HandlerReturnType (*handler_func)(EventType event_type, timestamp time, void* handler_data, ...);
+typedef HandlerReturnType (*handler_func)(EventType event_type, timestamp time, void *handler_data, ...);
 
 typedef struct {
     handler_func* handlers;
@@ -37,10 +32,12 @@ typedef struct {
     size_t num_handlers;
 } uLogger;
 
+#define SIZEOF_ULOGGER sizeof(uLogger)
+
 void get_timestamp(timestamp *data);
 
-void ulogger_init(uLogger *ulogger, handler_func *handlers, void** handlers_data, size_t num_handlers);
+uLoggerErrorCode ulogger_init(void *ulogger, handler_func *handlers, void **handlers_data, size_t num_handlers);
 
-void ulogger_log(uLogger *ulogger, EventType event_type, ...);
+uLoggerErrorCode ulogger_log(void *ulogger, EventType event_type, ...);
 
 #endif // ULOGGER
