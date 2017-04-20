@@ -15,6 +15,8 @@ typedef struct {
 
 uint32_t gatt_handler_init(uLoggerGattHandler * handler);
 
+uint32_t gatt_handler_logging_timer_start(uLoggerGattHandler * handler);
+
 HandlerReturnType gatt_handler_handle_log(EventType event_type, timestamp time, void* handler_data, ...);
 
 void gatt_handler_handle_ble_event(ble_evt_t *p_ble_evt, uLoggerGattHandler * handler);
