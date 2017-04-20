@@ -3,60 +3,63 @@
 
 #define START_OF_EMPTY_BYTES(buffer) (buffer->capacity - buffer->num_empty_bytes_at_end)
 
-uBufferErrorCode ubuffer_init(uBuffer *ubuffer, char *start, size_t buffer_capacity) {
-    ubuffer->start = start;
-	ubuffer->head = 0;
-	ubuffer->size = 0;
-	ubuffer->capacity = buffer_capacity;
-    ubuffer->num_empty_bytes_at_end = 0;
+uBufferErrorCode ubuffer_init(void *ubuffer, char *start, size_t buffer_capacity) {
+    uBuffer *ubuffer_handle = ubuffer;
+    ubuffer_handle->start = start;
+    ubuffer_handle->head = 0;
+    ubuffer_handle->size = 0;
+    ubuffer_handle->capacity = buffer_capacity;
+    ubuffer_handle->num_empty_bytes_at_end = 0;
     return UBUFFER_SUCCESS;
 }
 
-uBufferErrorCode ubuffer_push(uBuffer *ubuffer, void **item, size_t item_size) {
+uBufferErrorCode ubuffer_push(void *ubuffer, void **item, size_t item_size) {
+    uBuffer *ubuffer_handle = ubuffer;
     size_t item_location;
 
-    if (ubuffer->size + item_size > ubuffer->capacity) {
+    if (ubuffer_handle->size + item_size > ubuffer_handle->capacity) {
         return UBUFFER_FULL;
     }
 
-    item_location = ubuffer->head + ubuffer->size;
-    if (item_location + item_size > ubuffer->capacity) {
-        if (ubuffer->size > 0) {
+    item_location = ubuffer_handle->head + ubuffer_handle->size;
+    if (item_location + item_size > ubuffer_handle->capacity) {
+        if (ubuffer_handle->size > 0) {
             size_t num_empty_bytes_at_end, new_buffer_size;
-            num_empty_bytes_at_end = ubuffer->capacity - (ubuffer->head + ubuffer->size);
-            new_buffer_size = ubuffer->size + num_empty_bytes_at_end;
-            if (new_buffer_size + item_size > ubuffer->capacity) {
+            num_empty_bytes_at_end = ubuffer_handle->capacity - (ubuffer_handle->head + ubuffer_handle->size);
+            new_buffer_size = ubuffer_handle->size + num_empty_bytes_at_end;
+            if (new_buffer_size + item_size > ubuffer_handle->capacity) {
                 return UBUFFER_FULL;
             }
-            ubuffer->num_empty_bytes_at_end = num_empty_bytes_at_end;
-            ubuffer->size = new_buffer_size;
+            ubuffer_handle->num_empty_bytes_at_end = num_empty_bytes_at_end;
+            ubuffer_handle->size = new_buffer_size;
         } else {
-            ubuffer->num_empty_bytes_at_end = 0;
-            ubuffer->size = 0;
+            ubuffer_handle->num_empty_bytes_at_end = 0;
+            ubuffer_handle->size = 0;
         }
         item_location = 0;
     };
 
-    ubuffer->size += item_size;
-    *item = (void*) ubuffer->start + item_location;
+    ubuffer_handle->size += item_size;
+    *item = (void*) ubuffer_handle->start + item_location;
 
     return UBUFFER_SUCCESS;
 }
 
-uBufferErrorCode ubuffer_pop(uBuffer *ubuffer, void **item, size_t item_size) {
-    if (ubuffer->size < item_size) {
+uBufferErrorCode ubuffer_pop(void *ubuffer, void **item, size_t item_size) {
+    uBuffer *ubuffer_handle = ubuffer;
+    if (ubuffer_handle->size < item_size) {
         return UBUFFER_EMPTY;
     }
 
-    *item = (void*) ubuffer->start + ubuffer->head;
+    *item = (void*) ubuffer_handle->start + ubuffer_handle->head;
 
-    ubuffer->head += item_size;
-    ubuffer->size -= item_size;
+    ubuffer_handle->head += item_size;
+    ubuffer_handle->size -= item_size;
 
-    if (START_OF_EMPTY_BYTES(ubuffer) <= ubuffer->head) {
-        ubuffer->head = 0;
-        ubuffer->size -= ubuffer->num_empty_bytes_at_end;
-        ubuffer->num_empty_bytes_at_end = 0;
+    if (START_OF_EMPTY_BYTES(ubuffer_handle) <= ubuffer_handle->head) {
+        ubuffer_handle->head = 0;
+        ubuffer_handle->size -= ubuffer_handle->num_empty_bytes_at_end;
+        ubuffer_handle->num_empty_bytes_at_end = 0;
     }
 
     return UBUFFER_SUCCESS;

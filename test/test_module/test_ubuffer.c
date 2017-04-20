@@ -8,18 +8,19 @@
 #define MAX_INT_TYPE_IN_BUFFER (BUFFER_CAPACITY / sizeof(int))
 TEST_GROUP(TestUbuffer);
 
-static uBuffer ubuffer;
-static char* buffer_memory;
+static char ubuffer[SIZEOF_UBUFFER];
+static uBuffer *ubuffer_handle;
+static char *buffer_memory;
 
 void fill_buffer() {
     int *item;
     for (int i = 0; i < MAX_INT_TYPE_IN_BUFFER; i++) {
         TEST_ASSERT_EQUAL(UBUFFER_SUCCESS, ubuffer_push(&ubuffer, (void **) &item, sizeof(int)));
         TEST_ASSERT_EQUAL((int *) buffer_memory + i, item);
-        TEST_ASSERT_EQUAL((i + 1) * sizeof(int), ubuffer.size);
+        TEST_ASSERT_EQUAL((i + 1) * sizeof(int), ubuffer_handle->size);
         *item = i;
     };
-    TEST_ASSERT_EQUAL(MAX_INT_TYPE_IN_BUFFER * sizeof(int), ubuffer.size);
+    TEST_ASSERT_EQUAL(MAX_INT_TYPE_IN_BUFFER * sizeof(int), ubuffer_handle->size);
 }
 
 void empty_a_full_buffer(int first_value_in_buffer) {
@@ -33,12 +34,13 @@ void empty_a_full_buffer(int first_value_in_buffer) {
 
     //    Try to pop an item when the buffer is empty
     TEST_ASSERT_EQUAL(UBUFFER_EMPTY, ubuffer_pop(&ubuffer, (void **) &item, sizeof(int)));
-    TEST_ASSERT_EQUAL(0, ubuffer.size);
+    TEST_ASSERT_EQUAL(0, ubuffer_handle->size);
 }
 
 TEST_SETUP(TestUbuffer) {
     buffer_memory = (char*) malloc(BUFFER_CAPACITY);
     ubuffer_init(&ubuffer, buffer_memory, BUFFER_CAPACITY);
+    ubuffer_handle = (uBuffer*) ubuffer;
 }
 
 TEST_TEAR_DOWN(TestUbuffer) {
@@ -46,19 +48,19 @@ TEST_TEAR_DOWN(TestUbuffer) {
 }
 
 TEST(TestUbuffer, Test_Init) {
-    TEST_ASSERT_EQUAL(BUFFER_CAPACITY, ubuffer.capacity);
-    TEST_ASSERT_EQUAL(buffer_memory, ubuffer.start);
-    TEST_ASSERT_EQUAL(0, ubuffer.head);
-    TEST_ASSERT_EQUAL(0, ubuffer.size);
-    TEST_ASSERT_EQUAL(0, ubuffer.num_empty_bytes_at_end);
+    TEST_ASSERT_EQUAL(BUFFER_CAPACITY, ubuffer_handle->capacity);
+    TEST_ASSERT_EQUAL(buffer_memory, ubuffer_handle->start);
+    TEST_ASSERT_EQUAL(0, ubuffer_handle->head);
+    TEST_ASSERT_EQUAL(0, ubuffer_handle->size);
+    TEST_ASSERT_EQUAL(0, ubuffer_handle->num_empty_bytes_at_end);
 }
 
 TEST(TestUbuffer, Test_Push) {
     int *item;
     ubuffer_push(&ubuffer, (void **) &item, sizeof(int));
     *item = 10;
-    TEST_ASSERT_EQUAL(ubuffer.start, item);
-    TEST_ASSERT_EQUAL(sizeof(int), ubuffer.size);
+    TEST_ASSERT_EQUAL(ubuffer_handle->start, item);
+    TEST_ASSERT_EQUAL(sizeof(int), ubuffer_handle->size);
 }
 
 TEST(TestUbuffer, Test_Pop) {
@@ -66,16 +68,16 @@ TEST(TestUbuffer, Test_Pop) {
     ubuffer_push(&ubuffer, (void **) &item_pushed, sizeof(int));
     ubuffer_pop(&ubuffer, (void **) &item_poped, sizeof(int));
     TEST_ASSERT_EQUAL(item_pushed, item_poped);
-    TEST_ASSERT_EQUAL(BUFFER_CAPACITY, ubuffer.capacity);
-    TEST_ASSERT_EQUAL(buffer_memory, ubuffer.start);
-    TEST_ASSERT_EQUAL(sizeof(int), ubuffer.head);
-    TEST_ASSERT_EQUAL(0, ubuffer.size);
+    TEST_ASSERT_EQUAL(BUFFER_CAPACITY, ubuffer_handle->capacity);
+    TEST_ASSERT_EQUAL(buffer_memory, ubuffer_handle->start);
+    TEST_ASSERT_EQUAL(sizeof(int), ubuffer_handle->head);
+    TEST_ASSERT_EQUAL(0, ubuffer_handle->size);
 }
 
 TEST(TestUbuffer, Test_Full) {
     int *item;
     uBuffer ubuffer_clone;
-    char* data_clone[BUFFER_CAPACITY];
+    char *data_clone[BUFFER_CAPACITY];
 
     fill_buffer();
 
@@ -90,7 +92,7 @@ TEST(TestUbuffer, Test_Full) {
 TEST(TestUbuffer, Test_Empty) {
     int *item;
     uBuffer ubuffer_clone;
-    char* data_clone[BUFFER_CAPACITY];
+    char *data_clone[BUFFER_CAPACITY];
 
     memcpy((char*) &ubuffer_clone, (char*) &ubuffer, sizeof(ubuffer));
     memcpy((char*) data_clone, buffer_memory, BUFFER_CAPACITY);
@@ -112,8 +114,8 @@ TEST(TestUbuffer, Test_Circular_Tail) {
 
 //    Add one item (first cyclic function)
     TEST_ASSERT_EQUAL(UBUFFER_SUCCESS, ubuffer_push(&ubuffer, (void **) &item, sizeof(int)));
-    TEST_ASSERT_EQUAL(BUFFER_CAPACITY % sizeof(int), ubuffer.num_empty_bytes_at_end);
-    TEST_ASSERT_EQUAL(BUFFER_CAPACITY, ubuffer.size);
+    TEST_ASSERT_EQUAL(BUFFER_CAPACITY % sizeof(int), ubuffer_handle->num_empty_bytes_at_end);
+    TEST_ASSERT_EQUAL(BUFFER_CAPACITY, ubuffer_handle->size);
     *item = MAX_INT_TYPE_IN_BUFFER;
     TEST_ASSERT_EQUAL(buffer_memory, item);
 
@@ -132,5 +134,5 @@ TEST(TestUbuffer, Test_Circular_Head) {
 
     TEST_ASSERT_EQUAL(UBUFFER_SUCCESS, ubuffer_push(&ubuffer, (void **) &item, sizeof(int)));
     TEST_ASSERT_EQUAL(buffer_memory, item);
-    TEST_ASSERT_EQUAL(sizeof(int), ubuffer.size);
+    TEST_ASSERT_EQUAL(sizeof(int), ubuffer_handle->size);
 }
