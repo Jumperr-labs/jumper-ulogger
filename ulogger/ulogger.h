@@ -5,6 +5,11 @@
 #include <stdlib.h>
 
 typedef enum {
+    ULOGGER_SUCCESS = 0,
+    ULOGGER_FAIL
+} uLoggerErrorCode;
+
+typedef enum {
     NO_EVENT = 0,
     START_ADVERTISING = 1,
     STOP_ADVERTISING = 2,
@@ -14,7 +19,7 @@ typedef enum {
 
 typedef enum {
     HANDLER_SUCCESS = 0,
-    HANDLER_FAILED
+    HANDLER_FAIL
 } HandlerReturnType;
 
 typedef uint32_t timestamp;
@@ -31,8 +36,8 @@ typedef struct {
 
 void get_timestamp(timestamp *data);
 
-void ulogger_init(void *ulogger, handler_func *handlers, void **handlers_data, size_t num_handlers);
+uLoggerErrorCode ulogger_init(void *ulogger, handler_func *handlers, void **handlers_data, size_t num_handlers);
 
-void ulogger_log(void *ulogger, EventType event_type, ...);
+uLoggerErrorCode ulogger_log(void *ulogger, EventType event_type, ...);
 
 #endif // ULOGGER

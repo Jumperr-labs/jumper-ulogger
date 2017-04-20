@@ -14,10 +14,10 @@ TEST_TEAR_DOWN(TestLogger) {
 }
 
 TEST(TestLogger, Test_Sanity) {
-    ulogger_init(logger, log_handlers, handler_data, (size_t) NUM_HANDLERS);
+    TEST_ASSERT_EQUAL(ULOGGER_SUCCESS, ulogger_init(logger, log_handlers, handler_data, (size_t) NUM_HANDLERS));
 
-    ulogger_log(logger, START_RADIO);
+    TEST_ASSERT_EQUAL(ULOGGER_SUCCESS, ulogger_log(logger, START_RADIO));
     assert_counters(0);
-    ulogger_log(logger, START_RADIO);
+    TEST_ASSERT_EQUAL(ULOGGER_SUCCESS, ulogger_log(logger, START_RADIO));
     assert_counters(1);
 }

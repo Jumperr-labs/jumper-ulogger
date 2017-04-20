@@ -10,7 +10,7 @@ void init_user_handlers();
 
 void get_timestamp(timestamp *data);
 
-void log_handler(EventType event_type, timestamp time, ...);
+HandlerReturnType log_handler(EventType event_type, timestamp time, ...);
 
 void assert_counters(uint32_t expected_value);
 
