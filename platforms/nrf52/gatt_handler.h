@@ -3,12 +3,13 @@
 
 #include "ble.h"
 #include "ulogger.h"
+#include <stdbool.h>
 
 typedef struct {
     uint16_t connection_handle;
-    uint8_t uuid_type;
     uint16_t service_handle;
-
+    bool is_waiting_for_tx_complete;
+    uint8_t uuid_type;
     ble_gatts_char_handles_t send_char_handles;
 } uLoggerGattHandler;
 

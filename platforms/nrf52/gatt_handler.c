@@ -4,9 +4,11 @@
 #include "ble.h"
 #include "ble_srv_common.h"
 #include "ulogger.h"
+#include "ubuffer.h"
 
 #define NRF_LOG_MODULE_NAME "GATT_LOG"
 #include "nrf_log.h"
+
 static const ble_uuid128_t jumper_log_uuid = {
         {
                 //8ff40000-0a29-4a73-ab8d-b16ce0f1a2df
@@ -15,6 +17,9 @@ static const ble_uuid128_t jumper_log_uuid = {
         }
 };
 
+#define BUFFER_LENGTH 200
+uint8_t buffer_data[BUFFER_LENGTH];
+uBuffer buffer;
 
 #define LOGGER_UUID_SERVICE		0x5677
 #define LOGGER_UUID_CHAR		0x5678
@@ -87,7 +92,10 @@ static uint32_t add_logging_service(uLoggerGattHandler * handler) {
 uint32_t gatt_handler_init(uLoggerGattHandler * handler)
 {
     uint32_t err_code;
+    ubuffer_init(&buffer, (char *)buffer_data, BUFFER_LENGTH);
+
     memset(handler, 0, sizeof(uLoggerGattHandler));
+
     handler->connection_handle = BLE_CONN_HANDLE_INVALID;
 
     err_code = add_logging_service(handler);

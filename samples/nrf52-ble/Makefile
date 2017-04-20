@@ -64,7 +64,8 @@ SRC_FILES += \
   $(PLATFORM_DIR)/trace_nrf52.c \
   $(PLATFORM_DIR)/gatt_handler.c \
   $(ULOGGER_DIR)/ulogger.c \
-  $(ULOGGER_DIR)/ulogger_nrf52.c
+  $(ULOGGER_DIR)/ulogger_nrf52.c \
+  $(ULOGGER_DIR)/ubuffer.c
 
 # Include folders common to all targets
 INC_FOLDERS += \
