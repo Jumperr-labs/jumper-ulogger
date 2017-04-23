@@ -158,7 +158,7 @@ static void log_generating_function(void * p_context) {
     uLoggerGattHandler * handler = (uLoggerGattHandler *) p_context;
     uLoggerEventHeader * event;
 
-    if (handler->connection_handle != BLE_CONN_HANDLE_INVALID &&
+    while (handler->connection_handle != BLE_CONN_HANDLE_INVALID &&
             ubuffer_peek_first(&buffer, (void**)&event, sizeof(uLoggerEventHeader)) == UBUFFER_SUCCESS) {
         uint16_t len = sizeof(uLoggerEventHeader);
         ble_gatts_hvx_params_t hvx_params = {
@@ -190,7 +190,7 @@ HandlerReturnType gatt_handler_handle_log(EventType event_type, timestamp time, 
 uint32_t gatt_handler_logging_timer_start(uLoggerGattHandler * handler) {
     uint32_t err_code;
 
-    err_code = app_timer_start(send_log_timer, APP_TIMER_TICKS(2000)  , (void *)handler);
+    err_code = app_timer_start(send_log_timer, APP_TIMER_TICKS(5000)  , (void *)handler);
     if (err_code != NRF_SUCCESS) {
         NRF_LOG_INFO("Failed to create timer\n");
         return err_code;

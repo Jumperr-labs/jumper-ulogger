@@ -436,7 +436,7 @@ static void conn_params_init(void)
 static void application_timers_start(void)
 {
     ret_code_t err_code;
-    err_code = app_timer_start(log_generating_timer, APP_TIMER_TICKS(2000)  , NULL);
+    err_code = app_timer_start(log_generating_timer, APP_TIMER_TICKS(1000)  , NULL);
     APP_ERROR_CHECK(err_code);
 }
 
