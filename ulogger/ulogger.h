@@ -18,13 +18,21 @@ typedef enum {
 } EventType;
 
 typedef enum {
+    ULOGGER_DEBUG = 0,
+    ULOGGER_INFO,
+    ULOGGER_WARNING,
+    ULOGGER_ERROR,
+    ULOGGER_FATAL
+} LogLevel;
+
+typedef enum {
     HANDLER_SUCCESS = 0,
     HANDLER_FAIL
 } HandlerReturnType;
 
 typedef uint32_t timestamp;
 
-typedef HandlerReturnType (*handler_func)(EventType event_type, timestamp time, void *handler_data, ...);
+typedef HandlerReturnType (*handler_func)(LogLevel level, EventType event_type, timestamp time, void *handler_data, ...);
 
 typedef struct {
     handler_func* handlers;
@@ -38,6 +46,6 @@ void get_timestamp(timestamp *data);
 
 uLoggerErrorCode ulogger_init(void *ulogger, handler_func *handlers, void **handlers_data, size_t num_handlers);
 
-uLoggerErrorCode ulogger_log(void *ulogger, EventType event_type, ...);
+uLoggerErrorCode ulogger_log(void *ulogger, LogLevel level, EventType event_type, ...);
 
 #endif // ULOGGER

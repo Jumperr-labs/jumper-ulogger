@@ -8,15 +8,22 @@
 #include "trace_nrf52.h"
 
 static const nrf_drv_rtc_t rtc_log = NRF_DRV_RTC_INSTANCE(ULOGGER_RTC);
-HandlerReturnType log_handler(EventType event_type, timestamp time, void * handler_data, ...);
+HandlerReturnType log_handler(LogLevel level, EventType event_type, timestamp time, void * handler_data, ...);
 
 uLoggerGattHandler gatt_handler_state;
 
 static handler_func log_handlers[] = {&log_handler, &gatt_handler_handle_log};
 static void * handler_data[] = {NULL, &gatt_handler_state};
+static char * log_level_strings[] = {
+            "DEBUG",
+            "INFO",
+            "WARNING",
+            "ERROR",
+            "FATAL"
+};
 
-HandlerReturnType log_handler(EventType event_type, timestamp time, void * handler_data, ...) {
-    NRF_LOG_INFO("Event: %d\r\nTime: %d\r\n", event_type, time);
+HandlerReturnType log_handler(LogLevel level, EventType event_type, timestamp time, void * handler_data, ...) {
+    NRF_LOG_INFO("Level %s\r\nEvent: %d\r\nTime: %d\r\n", (uint32_t)log_level_strings[level], event_type, time);
     return HANDLER_SUCCESS;
 }
 

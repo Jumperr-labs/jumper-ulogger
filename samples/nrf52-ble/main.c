@@ -247,7 +247,7 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
 static void log_generating_function(void * p_context)
 {
     UNUSED_PARAMETER(p_context);
-    ulogger_log(&ulogger, START_RADIO);
+    ulogger_log(&ulogger, ULOGGER_INFO, START_RADIO);
 }
 
 /**@brief Function for the Timer initialization.

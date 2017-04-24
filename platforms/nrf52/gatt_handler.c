@@ -177,7 +177,7 @@ static void log_generating_function(void * p_context) {
     }
 }
 
-HandlerReturnType gatt_handler_handle_log(EventType event_type, timestamp time, void* handler_data, ...) {
+HandlerReturnType gatt_handler_handle_log(LogLevel level, EventType event_type, timestamp time, void* handler_data, ...) {
     uLoggerEventHeader * stored_event;
     if (ubuffer_allocate_next(&buffer, (void **)&stored_event, sizeof(uLoggerEventHeader))) {
         return HANDLER_FAIL;

@@ -14,7 +14,7 @@ void get_timestamp(timestamp *data) {
     *data = (timestamp) ++timestamp_counter;
 }
 
-HandlerReturnType log_handler(EventType event_type, timestamp time, ...) {
+HandlerReturnType log_handler(LogLevel level, EventType event_type, timestamp time, ...) {
     log_handler_counter = (uint32_t) time;
     return HANDLER_SUCCESS;
 }
