@@ -12,6 +12,7 @@
 
 APP_TIMER_DEF(send_log_timer);
 
+#define GATT_HANDLER_VERSION 0
 static const ble_uuid128_t jumper_log_uuid = {
         {
                 //8ff40000-0a29-4a73-ab8d-b16ce0f1a2df
@@ -28,6 +29,7 @@ static uBuffer buffer;
 #define LOGGER_UUID_CHAR		0x5678
 
 typedef struct {
+    uint8_t version;
     EventType event_type;
     timestamp time;
 } uLoggerEventHeader;
@@ -182,6 +184,7 @@ HandlerReturnType gatt_handler_handle_log(LogLevel level, EventType event_type, 
     if (ubuffer_allocate_next(&buffer, (void **)&stored_event, sizeof(uLoggerEventHeader))) {
         return HANDLER_FAIL;
     }
+    stored_event->version = GATT_HANDLER_VERSION;
     stored_event->time = time;
     stored_event->event_type = event_type;
     return HANDLER_SUCCESS;
