@@ -13,7 +13,7 @@ typedef struct {
     ble_gatts_char_handles_t send_char_handles;
 } uLoggerGattHandler;
 
-uint32_t gatt_handler_init(uLoggerGattHandler * handler);
+uint32_t gatt_handler_init(uLoggerGattHandler * handler, uint8_t * buffer, uint32_t buffer_length);
 
 uint32_t gatt_handler_logging_timer_start(uLoggerGattHandler * handler);
 

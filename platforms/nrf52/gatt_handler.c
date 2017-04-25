@@ -6,6 +6,7 @@
 #include "ulogger.h"
 #include "ubuffer.h"
 #include "app_timer.h"
+#include "logging_config.h"
 
 #define NRF_LOG_MODULE_NAME "GATT_LOG"
 #include "nrf_log.h"
@@ -21,9 +22,7 @@ static const ble_uuid128_t jumper_log_uuid = {
         }
 };
 
-#define BUFFER_LENGTH 200
-static uint8_t buffer_data[BUFFER_LENGTH];
-static uBuffer buffer;
+static uBuffer ubuffer;
 
 #define LOGGER_UUID_SERVICE		0x5677
 #define LOGGER_UUID_CHAR		0x5678
@@ -102,10 +101,9 @@ static uint32_t add_logging_service(uLoggerGattHandler * handler) {
 
 }
 
-uint32_t gatt_handler_init(uLoggerGattHandler * handler)
-{
+uint32_t gatt_handler_init(uLoggerGattHandler * handler, uint8_t * buffer, uint32_t buffer_length) {
     uint32_t err_code;
-    ubuffer_init(&buffer, (char *)buffer_data, BUFFER_LENGTH);
+    ubuffer_init(&ubuffer, (char *)buffer, buffer_length);
 
     memset(handler, 0, sizeof(uLoggerGattHandler));
 
@@ -161,7 +159,7 @@ static void log_generating_function(void * p_context) {
     uLoggerEventHeader * event;
 
     while (handler->connection_handle != BLE_CONN_HANDLE_INVALID &&
-            ubuffer_peek_first(&buffer, (void**)&event, sizeof(uLoggerEventHeader)) == UBUFFER_SUCCESS) {
+            ubuffer_peek_first(&ubuffer, (void**)&event, sizeof(uLoggerEventHeader)) == UBUFFER_SUCCESS) {
         uint16_t len = sizeof(uLoggerEventHeader);
         ble_gatts_hvx_params_t hvx_params = {
                 .handle = handler->send_char_handles.value_handle,
@@ -175,13 +173,15 @@ static void log_generating_function(void * p_context) {
         if (err_code != NRF_SUCCESS) {
             NRF_LOG_INFO("Failed to send log\n");
         }
-        ubuffer_free_first(&buffer, (void**)&event, sizeof(uLoggerEventHeader));
+        ubuffer_free_first(&ubuffer, (void**)&event, sizeof(uLoggerEventHeader));
     }
 }
 
 HandlerReturnType gatt_handler_handle_log(LogLevel level, EventType event_type, timestamp time, void* handler_data, ...) {
     uLoggerEventHeader * stored_event;
-    if (ubuffer_allocate_next(&buffer, (void **)&stored_event, sizeof(uLoggerEventHeader))) {
+    if (ubuffer_allocate_next(&ubuffer, (void **)&stored_event, sizeof(uLoggerEventHeader))) {
+
+        NRF_LOG_INFO("Failed to store log\n");
         return HANDLER_FAIL;
     }
     stored_event->version = GATT_HANDLER_VERSION;

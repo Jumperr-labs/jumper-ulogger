@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include "nrf_drv_rtc.h"
+#include "logging_config.h"
 
 #define NRF_LOG_MODULE_NAME "ULOGGER"
 #include "nrf_log.h"
@@ -8,12 +9,14 @@
 #include "trace_nrf52.h"
 
 static const nrf_drv_rtc_t rtc_log = NRF_DRV_RTC_INSTANCE(ULOGGER_RTC);
+
 HandlerReturnType log_handler(LogLevel level, EventType event_type, timestamp time, void * handler_data, ...);
-
 uLoggerGattHandler gatt_handler_state;
-
 static handler_func log_handlers[] = {&log_handler, &gatt_handler_handle_log};
 static void * handler_data[] = {NULL, &gatt_handler_state};
+
+static uint8_t gatt_buffer_data[GATT_BUFFER_SIZE];
+
 static char * log_level_strings[] = {
             "DEBUG",
             "INFO",
@@ -72,7 +75,7 @@ void get_timestamp(timestamp* time)
 void ulogger_init_nrf52(uLogger* logger) {
     uint32_t err_code;
     rtc_config();
-    err_code = gatt_handler_init(&gatt_handler_state);
+    err_code = gatt_handler_init(&gatt_handler_state, gatt_buffer_data, GATT_BUFFER_SIZE);
     NRF_LOG_INFO("Got res %d\n", err_code);
     ulogger_init(logger, log_handlers, handler_data, (size_t) 2);
 }
