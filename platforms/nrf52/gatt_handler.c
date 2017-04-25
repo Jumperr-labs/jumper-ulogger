@@ -12,7 +12,7 @@
 
 APP_TIMER_DEF(send_log_timer);
 
-#define GATT_HANDLER_VERSION 0
+#define GATT_HANDLER_VERSION 1
 static const ble_uuid128_t jumper_log_uuid = {
         {
                 //8ff40000-0a29-4a73-ab8d-b16ce0f1a2df
@@ -29,7 +29,7 @@ static uBuffer buffer;
 #define LOGGER_UUID_CHAR		0x5678
 
 typedef struct {
-    uint8_t version;
+    uint16_t version;
     EventType event_type;
     timestamp time;
 } uLoggerEventHeader;
