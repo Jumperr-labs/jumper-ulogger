@@ -84,7 +84,7 @@ TEST(TestUbuffer, Test_Free) {
     TEST_ASSERT_EQUAL(item_pushed, item_poped);
     TEST_ASSERT_EQUAL(BUFFER_CAPACITY, ubuffer_handle->capacity);
     TEST_ASSERT_EQUAL(buffer_memory, ubuffer_handle->start);
-    TEST_ASSERT_EQUAL(sizeof(int), ubuffer_handle->head);
+    TEST_ASSERT_EQUAL(0, ubuffer_handle->head);
     TEST_ASSERT_EQUAL(0, ubuffer_handle->size);
 }
 
@@ -158,10 +158,10 @@ TEST(TestUbuffer, Test_Nrf_Scenario) {
     TEST_ASSERT_EQUAL(BUFFER_CAPACITY % sizeof(int), ubuffer_handle->num_empty_bytes_at_end);
     TEST_ASSERT_EQUAL(BUFFER_CAPACITY, ubuffer_handle->size);
     *item = MAX_INT_TYPE_IN_BUFFER + 1;
-    TEST_ASSERT_EQUAL(buffer_memory, item);
+    TEST_ASSERT_EQUAL(buffer_memory + sizeof(int), item);
 
 //    Try to add one more item when buffer is full
-    TEST_ASSERT_EQUAL(UBUFFER_SUCCESS, ubuffer_allocate_next(ubuffer, (void **) &item, sizeof(int)));
+    TEST_ASSERT_EQUAL(UBUFFER_FULL, ubuffer_allocate_next(ubuffer, (void **) &item, sizeof(int)));
 
     for (int i = 0; i < MAX_INT_TYPE_IN_BUFFER; i++) {
         TEST_ASSERT_EQUAL(UBUFFER_SUCCESS, ubuffer_free_first(ubuffer, (void **) &item, sizeof(int)));
