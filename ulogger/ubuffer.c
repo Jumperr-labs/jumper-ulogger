@@ -35,13 +35,13 @@ uBufferErrorCode ubuffer_allocate_next(void *ubuffer, void **item, size_t item_s
         } else {
             ubuffer_handle->num_empty_bytes_at_end = 0;
             ubuffer_handle->size = 0;
+            ubuffer_handle->head = 0;
         }
         item_location = 0;
     };
 
     ubuffer_handle->size += item_size;
-    *item = (void*) ubuffer_handle->start + item_location;
-
+    *item = (void*) (ubuffer_handle->start + item_location);
     return UBUFFER_SUCCESS;
 }
 
@@ -54,7 +54,6 @@ uBufferErrorCode ubuffer_free_first(void *ubuffer, void **item, size_t item_size
 
     ubuffer_handle->head += item_size;
     ubuffer_handle->size -= item_size;
-
     if (START_OF_EMPTY_BYTES(ubuffer_handle) <= ubuffer_handle->head) {
         ubuffer_handle->head = 0;
         ubuffer_handle->size -= ubuffer_handle->num_empty_bytes_at_end;
@@ -66,12 +65,12 @@ uBufferErrorCode ubuffer_free_first(void *ubuffer, void **item, size_t item_size
 
 uBufferErrorCode ubuffer_peek_first(void *ubuffer, void **item, size_t item_size) {
     uBuffer *ubuffer_handle = ubuffer;
-    if (item_size != 0 && (ubuffer_handle->size < item_size || START_OF_EMPTY_BYTES(ubuffer_handle) <= ubuffer_handle->head + item_size - 1))
-    {
+    if (item_size != 0 && (ubuffer_handle->size < item_size ||
+            START_OF_EMPTY_BYTES(ubuffer_handle) <= ubuffer_handle->head + item_size - 1)) {
         return UBUFFER_EMPTY;
     }
 
-    *item = (void*) ubuffer_handle->start + ubuffer_handle->head;
+    *item = (void*) (ubuffer_handle->start + ubuffer_handle->head);
 
     return UBUFFER_SUCCESS;
 }
