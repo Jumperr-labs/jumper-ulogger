@@ -3,9 +3,9 @@ link_directories(../../ulogger)
 
 #set(SRC_FILES test_logger.c tests_runner.c)
 
-add_executable(all_tests tests_runner.c test_ulogger.c test_ubuffer.c mock_user_handlers.c)
+add_executable(ulogger_tests tests_runner.c test_ulogger.c test_ubuffer.c mock_user_handlers.c)
 
-target_link_libraries(all_tests Unity ulogger)
+target_link_libraries(ulogger_tests Unity ulogger)
 
 #add_test(tests all_tests)
 #

@@ -1,3 +1,7 @@
+#include "logging_config.h"
+
+#if ULOGGER_PLATFORM == PLATFORM_NRF52
+
 #include "sdk_common.h"
 #include "gatt_handler.h"
 #include "ble_srv_common.h"
@@ -10,31 +14,36 @@
 
 #define NRF_LOG_MODULE_NAME "GATT_LOG"
 #include "nrf_log.h"
+#include "network_log_handler.h"
 
 APP_TIMER_DEF(send_log_timer);
 
-#define GATT_HANDLER_VERSION 1
 static const ble_uuid128_t jumper_log_uuid = {
         {
                 //8ff40000-0a29-4a73-ab8d-b16ce0f1a2df
-
                 0xdf, 0xa2, 0xf1, 0xe0, 0x6c, 0xb1, 0x8d, 0xab, 0x73, 0x4a, 0x29, 0x0a, 0x00, 0x00, 0xf4, 0x8f
         }
 };
 
-static uBuffer ubuffer;
-
 #define LOGGER_UUID_SERVICE		0x5677
 #define LOGGER_UUID_CHAR		0x5678
 
-typedef struct {
-    uint16_t version;
-    EventType event_type;
-    timestamp time;
-} uLoggerEventHeader;
 
+static int send_to_gatt(void * network_context, uint8_t * data, uint32_t length);
+static bool can_send_gatt_message(void * network_context);
+static int gatt_handler_logging_timer_start(uint32_t time_in_ms, periodic_callback_function func);
 
-static void log_generating_function(void * p_context);
+#define LOG_SEND_PERIOD_MS 5000
+
+uLoggerGattHandler handler;
+
+network_log_config config = {
+    .log_send_period = LOG_SEND_PERIOD_MS,
+    .context = (void *) &handler,
+    .send = send_to_gatt,
+    .can_send = can_send_gatt_message,
+    .timer_init = gatt_handler_logging_timer_start,
+};
 
 static uint32_t add_logging_chatactaristic(uLoggerGattHandler *handler)
 {
@@ -101,10 +110,14 @@ static uint32_t add_logging_service(uLoggerGattHandler * handler) {
 
 }
 
-uint32_t gatt_handler_init(uLoggerGattHandler * handler, uint8_t * buffer, uint32_t buffer_length) {
-    uint32_t err_code;
-    ubuffer_init(&ubuffer, (char *)buffer, buffer_length);
+static bool can_send_gatt_message(void * network_context) {
+    uLoggerGattHandler * handler = (uLoggerGattHandler *) network_context;
+    return (handler->connection_handle != BLE_CONN_HANDLE_INVALID);
+}
 
+uint32_t gatt_handler_init(uint8_t * buffer, uint32_t buffer_length) {
+    uint32_t err_code;
+    uLoggerGattHandler * handler = (uLoggerGattHandler *) config.context; 
     memset(handler, 0, sizeof(uLoggerGattHandler));
 
     handler->connection_handle = BLE_CONN_HANDLE_INVALID;
@@ -121,18 +134,9 @@ uint32_t gatt_handler_init(uLoggerGattHandler * handler, uint8_t * buffer, uint3
         return err_code;
     }
 
-
-    err_code = app_timer_create(&send_log_timer,
-                                APP_TIMER_MODE_REPEATED,
-                                log_generating_function);
-    if (err_code != NRF_SUCCESS) {
-        NRF_LOG_INFO("Failed to create timer\n");
-        return err_code;
-    }
-
-    err_code = gatt_handler_logging_timer_start(handler);
-    if (err_code != NRF_SUCCESS) {
-        NRF_LOG_INFO("Failed to start timer\n");
+    err_code = network_logger_init(&config, buffer, buffer_length);
+    if (err_code) {
+        NRF_LOG_INFO("Failed at network logger\n");
         return err_code;
     }
 
@@ -153,51 +157,48 @@ void gatt_handler_handle_ble_event(ble_evt_t *p_ble_evt, uLoggerGattHandler * ha
     }
 }
 
-static void log_generating_function(void * p_context) {
+static int send_to_gatt(void * network_context, uint8_t * data, uint32_t length) {
+    uLoggerGattHandler * handler = (uLoggerGattHandler *) network_context;
+    //TODO assert length < uint16
     uint32_t err_code;
-    uLoggerGattHandler * handler = (uLoggerGattHandler *) p_context;
-    uLoggerEventHeader * event;
-
-    while (handler->connection_handle != BLE_CONN_HANDLE_INVALID &&
-            ubuffer_peek_first(&ubuffer, (void**)&event, sizeof(uLoggerEventHeader)) == UBUFFER_SUCCESS) {
-        uint16_t len = sizeof(uLoggerEventHeader);
-        ble_gatts_hvx_params_t hvx_params = {
+    uint16_t len = length;
+    ble_gatts_hvx_params_t hvx_params = {
                 .handle = handler->send_char_handles.value_handle,
                 .type   = BLE_GATT_HVX_NOTIFICATION,
                 .p_len  = &len,
-                .p_data = (uint8_t*)event
+                .p_data = data
         };
+    err_code = sd_ble_gatts_hvx(handler->connection_handle, &hvx_params);
 
-        err_code = sd_ble_gatts_hvx(handler->connection_handle, &hvx_params);
-
-        if (err_code != NRF_SUCCESS) {
-            NRF_LOG_INFO("Failed to send log\n");
-        }
-        ubuffer_free_first(&ubuffer, (void**)&event, sizeof(uLoggerEventHeader));
+    if (err_code != NRF_SUCCESS) {
+        NRF_LOG_INFO("Failed to send log\n");
+        return 1;
     }
+    return 0;
 }
 
-HandlerReturnType gatt_handler_handle_log(LogLevel level, EventType event_type, timestamp time, void* handler_data, ...) {
-    uLoggerEventHeader * stored_event;
-    if (ubuffer_allocate_next(&ubuffer, (void **)&stored_event, sizeof(uLoggerEventHeader))) {
-
-        NRF_LOG_INFO("Failed to store log\n");
-        return HANDLER_FAIL;
-    }
-    stored_event->version = GATT_HANDLER_VERSION;
-    stored_event->time = time;
-    stored_event->event_type = event_type;
-    return HANDLER_SUCCESS;
+HandlerReturnType gatt_handler_handle_log(void * handler_data, LogLevel level, EventType event_type, timestamp time, void * data, size_t data_length) {
+ //HandlerReturnType network_handler_log(network_log_config * config, LogLevel level, EventType event_type, timestamp time, void * log_data, size_t data_length);
+    return network_handler_log(&config, level, event_type, time, data, data_length);
 }
 
-uint32_t gatt_handler_logging_timer_start(uLoggerGattHandler * handler) {
+static int gatt_handler_logging_timer_start(uint32_t time_in_ms, periodic_callback_function func) {
     uint32_t err_code;
-
-    err_code = app_timer_start(send_log_timer, APP_TIMER_TICKS(5000)  , (void *)handler);
+    
+    err_code = app_timer_create(&send_log_timer, APP_TIMER_MODE_REPEATED, func);
     if (err_code != NRF_SUCCESS) {
         NRF_LOG_INFO("Failed to create timer\n");
         return err_code;
     }
 
+    ret_code_t ret_code; 
+    ret_code = app_timer_start(send_log_timer, APP_TIMER_TICKS(time_in_ms)  , (void *)&config);
+    if (ret_code) {
+        NRF_LOG_INFO("Failed to create timer\n");
+        return ret_code;
+    }
+
     return NRF_SUCCESS;
 }
+
+#endif

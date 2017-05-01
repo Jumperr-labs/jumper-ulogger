@@ -10,7 +10,7 @@ void init_user_handlers();
 
 void get_timestamp(timestamp *data);
 
-HandlerReturnType log_handler(LogLevel level, EventType event_type, timestamp time, ...);
+HandlerReturnType log_handler(void *handler_data, LogLevel level, EventType event_type, timestamp time, void * log_data, size_t data_length);
 
 void assert_counters(uint32_t expected_value);
 

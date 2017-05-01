@@ -1,6 +1,9 @@
+#include "logging_config.h"
+
+#if ULOGGER_PLATFORM == PLATFORM_NRF52
+
 #include <stdint.h>
 #include "nrf_drv_rtc.h"
-#include "logging_config.h"
 
 #define NRF_LOG_MODULE_NAME "ULOGGER"
 #include "nrf_log.h"
@@ -10,10 +13,11 @@
 
 static const nrf_drv_rtc_t rtc_log = NRF_DRV_RTC_INSTANCE(ULOGGER_RTC);
 
-HandlerReturnType log_handler(LogLevel level, EventType event_type, timestamp time, void * handler_data, ...);
-uLoggerGattHandler gatt_handler_state;
+HandlerReturnType log_handler(void *handler_data, LogLevel level, EventType event_type, timestamp time, void * data, size_t data_length);
+
+extern uLoggerGattHandler handler;
 static handler_func log_handlers[] = {&log_handler, &gatt_handler_handle_log};
-static void * handler_data[] = {NULL, &gatt_handler_state};
+static void * handler_data[] = {NULL, &handler};
 
 static uint8_t gatt_buffer_data[GATT_BUFFER_SIZE];
 
@@ -25,7 +29,7 @@ static char * log_level_strings[] = {
             "FATAL"
 };
 
-HandlerReturnType log_handler(LogLevel level, EventType event_type, timestamp time, void * handler_data, ...) {
+HandlerReturnType log_handler(void *handler_data, LogLevel level, EventType event_type, timestamp time, void * data,size_t data_length) {
     NRF_LOG_INFO("Level %s\r\nEvent: %d\r\nTime: %d\r\n", (uint32_t)log_level_strings[level], event_type, time);
     return HANDLER_SUCCESS;
 }
@@ -57,16 +61,6 @@ static void rtc_config(void)
     nrf_drv_rtc_enable(&rtc_log);
 }
 
-// void get_timestamp(timestamp* time)
-// {
-//     uint32_t counter;
-//     float freq;
-
-//     freq = 32768/rtc_log.p_reg->PRESCALER+1;
-//     counter = nrf_drv_rtc_counter_get(&rtc_log); 
-//     *time = (timestamp) counter/freq;
-// }
-
 void get_timestamp(timestamp* time)
 {
     *time = (timestamp) nrf_drv_rtc_counter_get(&rtc_log) / 16;
@@ -75,7 +69,7 @@ void get_timestamp(timestamp* time)
 void ulogger_init_nrf52(uLogger* logger) {
     uint32_t err_code;
     rtc_config();
-    err_code = gatt_handler_init(&gatt_handler_state, gatt_buffer_data, GATT_BUFFER_SIZE);
+    err_code = gatt_handler_init(gatt_buffer_data, GATT_BUFFER_SIZE);
     NRF_LOG_INFO("Got res %d\n", err_code);
     ulogger_init(logger, log_handlers, handler_data, (size_t) 2);
 }
@@ -83,6 +77,8 @@ void ulogger_init_nrf52(uLogger* logger) {
 
 void ulogger_handle_ble_event(ble_evt_t * p_ble_evt) {
 
-    gatt_handler_handle_ble_event(p_ble_evt, &gatt_handler_state);
+    gatt_handler_handle_ble_event(p_ble_evt, &handler);
     ulogger_trace_nrf_ble_event(p_ble_evt);
 }
+
+#endif
