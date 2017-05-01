@@ -32,6 +32,8 @@ void fill_buffer() {
         TEST_ASSERT_EQUAL((i + 1) * sizeof(int), ubuffer_handle->size);
         *item = i;
     };
+
+    TEST_ASSERT_EQUAL(UBUFFER_FULL, ubuffer_allocate_next(ubuffer, (void **) &item, sizeof(int)));
     TEST_ASSERT_EQUAL(MAX_INT_TYPE_IN_BUFFER * sizeof(int), ubuffer_handle->size);
 }
 
@@ -41,7 +43,7 @@ void empty_a_full_buffer(int first_value_in_buffer) {
     //    Pop everything out
     for (int i = 0; i < MAX_INT_TYPE_IN_BUFFER; i++) {
         TEST_ASSERT_EQUAL(UBUFFER_SUCCESS, ubuffer_free_first(ubuffer, (void **) &item, sizeof(int)));
-        TEST_ASSERT_EQUAL(*item, i + first_value_in_buffer);
+        TEST_ASSERT_EQUAL(i + first_value_in_buffer, *item);
     }
 
     //    Try to pop an item when the buffer is empty
@@ -126,6 +128,49 @@ TEST(TestUbuffer, Test_Circular_Tail) {
     TEST_ASSERT_EQUAL(UBUFFER_FULL, ubuffer_allocate_next(ubuffer, (void **) &item, sizeof(int)));
 
     empty_a_full_buffer(1);
+
+    //make sure we can add more after emptyinh
+    TEST_ASSERT_EQUAL(UBUFFER_SUCCESS, ubuffer_allocate_next(ubuffer, (void **) &item, sizeof(int)));
+    TEST_ASSERT_EQUAL(UBUFFER_SUCCESS, ubuffer_peek_first(ubuffer, (void **) &item, sizeof(int)));
+}
+
+TEST(TestUbuffer, Test_Nrf_Scenario) {
+    int *item;
+
+//    Fill the buffer to the maximum amount of integers possible
+    fill_buffer();
+
+//    Take 2 item out
+    TEST_ASSERT_EQUAL(UBUFFER_SUCCESS, ubuffer_free_first(ubuffer, (void **) &item, sizeof(int)));
+    TEST_ASSERT_EQUAL(0, *item);
+
+    TEST_ASSERT_EQUAL(UBUFFER_SUCCESS, ubuffer_free_first(ubuffer, (void **) &item, sizeof(int)));
+    TEST_ASSERT_EQUAL(1, *item);
+
+//    Add one item (first cyclic function)
+    TEST_ASSERT_EQUAL(UBUFFER_SUCCESS, ubuffer_allocate_next(ubuffer, (void **) &item, sizeof(int)));
+    TEST_ASSERT_EQUAL(BUFFER_CAPACITY % sizeof(int), ubuffer_handle->num_empty_bytes_at_end);
+    TEST_ASSERT_EQUAL(11, ubuffer_handle->size);
+    *item = MAX_INT_TYPE_IN_BUFFER;
+    TEST_ASSERT_EQUAL(buffer_memory, item);
+
+    TEST_ASSERT_EQUAL(UBUFFER_SUCCESS, ubuffer_allocate_next(ubuffer, (void **) &item, sizeof(int)));
+    TEST_ASSERT_EQUAL(BUFFER_CAPACITY % sizeof(int), ubuffer_handle->num_empty_bytes_at_end);
+    TEST_ASSERT_EQUAL(BUFFER_CAPACITY, ubuffer_handle->size);
+    *item = MAX_INT_TYPE_IN_BUFFER + 1;
+    TEST_ASSERT_EQUAL(buffer_memory, item);
+
+//    Try to add one more item when buffer is full
+    TEST_ASSERT_EQUAL(UBUFFER_SUCCESS, ubuffer_allocate_next(ubuffer, (void **) &item, sizeof(int)));
+
+    for (int i = 0; i < MAX_INT_TYPE_IN_BUFFER; i++) {
+        TEST_ASSERT_EQUAL(UBUFFER_SUCCESS, ubuffer_free_first(ubuffer, (void **) &item, sizeof(int)));
+        TEST_ASSERT_EQUAL(i + 2, *item);
+    }
+
+    //make sure we can add more after emptyinh
+    TEST_ASSERT_EQUAL(UBUFFER_SUCCESS, ubuffer_allocate_next(ubuffer, (void **) &item, sizeof(int)));
+    TEST_ASSERT_EQUAL(UBUFFER_SUCCESS, ubuffer_peek_first(ubuffer, (void **) &item, sizeof(int)));
 }
 
 TEST(TestUbuffer, Test_Circular_Head) {
@@ -138,6 +183,7 @@ TEST(TestUbuffer, Test_Circular_Head) {
     TEST_ASSERT_EQUAL(UBUFFER_SUCCESS, ubuffer_allocate_next(ubuffer, (void **) &item, sizeof(int)));
     TEST_ASSERT_EQUAL(buffer_memory, item);
     TEST_ASSERT_EQUAL(sizeof(int), ubuffer_handle->size);
+    TEST_ASSERT_EQUAL(UBUFFER_SUCCESS, ubuffer_peek_first(ubuffer, (void **) &item, sizeof(int)));
 }
 
 TEST(TestUbuffer, Test_Free_Size_0) {
@@ -166,7 +212,7 @@ TEST(TestUbuffer, Test_Free_Item_Too_Large_With_Empty_Bytes_At_End) {
     int *item;
 
     ubuffer_handle->num_empty_bytes_at_end = 2;
-    ubuffer_handle->head = ubuffer_handle->capacity - 3;
+    ubuffer_handle->head = ubuffer_handle->head + ubuffer_handle->capacity - 3;
     ubuffer_handle->size = 4;
 
     TEST_ASSERT_EQUAL(UBUFFER_EMPTY, ubuffer_free_first(ubuffer, (void**) &item, 2));

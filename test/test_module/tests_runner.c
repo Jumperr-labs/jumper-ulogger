@@ -17,6 +17,7 @@ TEST_GROUP_RUNNER(TestUbuffer) {
     RUN_TEST_CASE(TestUbuffer, Test_Free_Item_Too_Large);
     RUN_TEST_CASE(TestUbuffer, Test_Free_Item_Too_Large_With_Empty_Bytes_At_End);
     RUN_TEST_CASE(TestUbuffer, Test_Peek);
+    RUN_TEST_CASE(TestUbuffer, Test_Nrf_Scenario);
 }
 
 static void RunAllTests(void)
