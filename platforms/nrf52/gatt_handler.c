@@ -33,7 +33,6 @@ static int send_to_gatt(void * network_context, uint8_t * data, uint32_t length)
 static bool can_send_gatt_message(void * network_context);
 static int gatt_handler_logging_timer_start(uint32_t time_in_ms, periodic_callback_function func);
 
-#define LOG_SEND_PERIOD_MS 5000
 
 uLoggerGattHandler handler;
 

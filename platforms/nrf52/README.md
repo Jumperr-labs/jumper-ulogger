@@ -1,8 +1,9 @@
 # nRF52 Readme
-
+_INSERT INTRO HERE_
 ## Relevant code files
 Add the following files and include paths to your code:
 ```
+Repository Root
 ├── README.md
 ├── platforms
 │   └── nrf52
@@ -24,20 +25,18 @@ Add the following files and include paths to your code:
 ```
 ## Setup
 
-Make all the following changes to the main.c file.
-
-Add the following includes to your set of includes:
+### Changes to main.c
+* Add the following includes to your set of includes:
 ```
 #include "ulogger.h"
 #include "ulogger_nrf52.h"
 #include "trace_nrf52.h"
 ```
-Next up, on ble_stack_init(void), increase the UUID count by 1 as we’re adding a GATT message. In Nordic’s example it was set to 0, so we’re increasing to 1.
+* Next up, on `ble_stack_init(void)`, increase the UUID count by 1 as we’re adding a GATT message. In Nordic’s example it was set to 0, so we’re increasing to 1.
 ```
 ble_cfg.common_cfg.vs_uuid_cfg.vs_uuid_count = 1;
 ```
-
-We need to receive BLE events from the SoftDevice, to do so add the following line in the `on_adv_evt` function
+* We need to receive BLE events from the SoftDevice, to do so add the following line in the `ble_evt_dispatch`:
 ```
 ulogger_handle_ble_event(p_ble_evt);
 ```
@@ -65,18 +64,18 @@ To this:
 define symbol __ICFEDIT_region_RAM_start__   = 0x20001fd0;
 ```
 ## Initialization
-Finally on the `main(void)` function, add the following line when initializing services
-```
-ulogger_init_nrf52(&ulogger);
-```
-Note - this has to happen after the SoftDevice is configured and BLE is initialized.
-## Usage
-Add a definition for the uLogger struct, we added following code right after the assert_nrf_callback:
+Add a definition for the uLogger struct, we added following code right after the `assert_nrf_callback`:
 
 ```
 uLogger ulogger;
 ```
 
+Finally on the `main(void)` function, add the following line when initializing services
+```
+ulogger_init_nrf52(&ulogger);
+```
+Note - this has to happen after the SoftDevice is configured and BLE is initialized.
+## Tracing
 To trace advertising events add the following line to the beginning of the `on_adv_evt` function
 ```
 ulogger_trace_nrf_ble_adv_event(ble_adv_evt);
