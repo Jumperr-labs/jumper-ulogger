@@ -15,6 +15,8 @@ typedef uint32_t EventType;
 #define STOP_ADVERTISING        2
 #define START_RADIO             3
 #define STOP_RADIO              4
+#define ULOGGER_BATTERY_EVENT   5
+
 
 #define PLATFORM_EVENTS_START   10000
 

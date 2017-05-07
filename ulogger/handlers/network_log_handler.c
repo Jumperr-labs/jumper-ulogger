@@ -30,7 +30,7 @@ HandlerReturnType network_handler_log(network_log_config * config, LogLevel leve
     stored_event->data_length = data_length;
     
     if (data_length > 0) {
-        memcpy((void*)(stored_event + sizeof(uLoggerEventHeader)), log_data, data_length);
+        memcpy((void*)(((uint8_t*)stored_event) + sizeof(uLoggerEventHeader)), log_data, data_length);
     }
     
     return HANDLER_SUCCESS;
