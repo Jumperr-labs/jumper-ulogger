@@ -107,12 +107,21 @@ static uint32_t add_logging_service(uLoggerGattHandler * handler) {
     ble_uuid.uuid = LOGGER_UUID_SERVICE;
 
     return sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY, &ble_uuid, &handler->service_handle);
-
 }
 
 static bool can_send_gatt_message(void * network_context) {
     uLoggerGattHandler * handler = (uLoggerGattHandler *) network_context;
     return (handler->connection_handle != BLE_CONN_HANDLE_INVALID);
+}
+
+static int disable_notifications(uLoggerGattHandler *handler) {
+    uint16_t value = 0;
+    ble_gatts_value_t gatts_value_to_write = {
+        .len = sizeof(uint16_t),
+        .offset = 0,
+        .p_value = (uint8_t*) &value
+    };
+    return sd_ble_gatts_value_set(handler->connection_handle, handler->send_char_handles.cccd_handle, &gatts_value_to_write);
 }
 
 uint32_t gatt_handler_init(uint8_t * buffer, uint32_t buffer_length) {
@@ -147,6 +156,7 @@ void gatt_handler_handle_ble_event(ble_evt_t *p_ble_evt, uLoggerGattHandler * ha
     switch (p_ble_evt->header.evt_id) {
         case BLE_GAP_EVT_CONNECTED:
             handler->connection_handle = p_ble_evt->evt.gap_evt.conn_handle;
+            disable_notifications(handler);
             break;
         case BLE_GAP_EVT_DISCONNECTED:
             handler->connection_handle = BLE_CONN_HANDLE_INVALID;
