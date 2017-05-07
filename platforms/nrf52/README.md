@@ -41,7 +41,11 @@ We need to receive BLE events from the SoftDevice, to do so add the following li
 ```
 ulogger_handle_ble_event(p_ble_evt);
 ```
-Moving on to `ble_app_template_gcc_nrf52.ld` (in case you’re using armgcc)
+
+### Linking
+
+#### ARMGCC
+Moving on to the *.ld file, in our case `ble_app_template_gcc_nrf52.ld`:
 
 From the `Memory.RAM` section, push the origin 0x10 bytes forward and reduce the length by 0x10 bytes. Based on the original example, this means changing this line:
 ```
@@ -51,7 +55,17 @@ To this:
 ```
 RAM (rwx) :  ORIGIN = 0x20001fd0, LENGTH = 0xe030
 ```
-And finally on the `main(void)` function, add the following line when initializing services
+#### IAR
+In your *.icf file (here we used `ble_app_template_iar_nRF5x.icf`, change RAM start by 0x10 bytes, from:
+```
+define symbol __ICFEDIT_region_RAM_start__   = 0x20001fc0;
+```
+To this:
+```
+define symbol __ICFEDIT_region_RAM_start__   = 0x20001fd0;
+```
+## Initialization
+Finally on the `main(void)` function, add the following line when initializing services
 ```
 ulogger_init_nrf52(&ulogger);
 ```
