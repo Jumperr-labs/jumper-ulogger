@@ -4,3 +4,6 @@
 [submodule "nrf5-sdk"]
 	path = external/nrf5-sdk
 	url = https://github.com/Jumperr-labs/nrf5-sdk.git
+[submodule "platforms/cc3200/keen-library"]
+	path = platforms/cc3200/keen-library
+	url = https://github.com/Jumperr-labs/keen-cc3200.git
