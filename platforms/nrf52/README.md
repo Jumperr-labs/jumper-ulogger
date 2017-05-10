@@ -1,5 +1,5 @@
 # nRF52 Readme
-_INSERT INTRO HERE_
+Follow these instructions to integrate Jumper Insights to an nRF52 project. Note how small the footprint is? We also made sure the bandwidth and energy requirements are minimal.
 ## Relevant code files
 Add the following files and include paths to your code:
 ```
