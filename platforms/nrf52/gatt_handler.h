@@ -20,6 +20,7 @@ typedef struct {
     bool is_waiting_for_tx_complete;
     uint8_t uuid_type;
     ble_gatts_char_handles_t send_char_handles;
+    ble_gatts_char_handles_t time_char_handle;
 } uLoggerGattHandler;
 
 /**
@@ -29,7 +30,7 @@ typedef struct {
  * @param buffer_length The size of the given buffer.
  * @return 0 on success, error code otherwise.
  */
-uint32_t gatt_handler_init(uint8_t * buffer, uint32_t buffer_length);
+uint32_t gatt_handler_init(network_log_config * config, uint8_t * buffer, uint32_t buffer_length);
 
 /**
  *

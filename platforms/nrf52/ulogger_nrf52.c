@@ -10,12 +10,15 @@
 #include "ulogger_nrf52.h"
 #include "gatt_handler.h"
 #include "trace_nrf52.h"
+#include "network_log_handler.h"
 
 static const nrf_drv_rtc_t rtc_log = NRF_DRV_RTC_INSTANCE(ULOGGER_RTC);
 
 HandlerReturnType log_handler(void *handler_data, LogLevel level, EventType event_type, timestamp time, void * data, size_t data_length);
 
-extern uLoggerGattHandler handler;
+static uLoggerGattHandler handler;
+network_log_config config;
+
 static handler_func log_handlers[] = {&log_handler, &gatt_handler_handle_log};
 static void * handler_data[] = {NULL, &handler};
 
@@ -69,7 +72,10 @@ void get_timestamp(timestamp* time)
 void ulogger_init_nrf52(uLogger* logger) {
     uint32_t err_code;
     rtc_config();
-    err_code = gatt_handler_init(gatt_buffer_data, GATT_BUFFER_SIZE);
+
+    config.context = (void*) &handler;
+    config.callback = &netowork_logger_periodic_callback;
+    err_code = gatt_handler_init(&config, gatt_buffer_data, GATT_BUFFER_SIZE);
     NRF_LOG_INFO("Got res %d\n", err_code);
     ulogger_init(logger, log_handlers, handler_data, (size_t) 2);
 }

@@ -42,7 +42,6 @@ void netowork_logger_periodic_callback(void * data) {
 }
 
 int network_logger_init(network_log_config * config, uint8_t * buffer, size_t buffer_size) {
-    int res;
     ubuffer_init(&config->buffer, (char *)buffer, buffer_size);
     return 0;
 }
