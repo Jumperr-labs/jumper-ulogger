@@ -1,5 +1,8 @@
 /**@file
  * @brief Buffer implementation for use in networking loggers.
+ *
+ * @defgroup ubuffer uBuffer helper
+ * @{
  */
 #ifndef UBUFFER
 #define UBUFFER
@@ -68,3 +71,7 @@ uBufferErrorCode ubuffer_free_first(void *ubuffer, void **item, size_t item_size
 uBufferErrorCode ubuffer_peek_first(void *ubuffer, void **item, size_t item_size);
 
 #endif //UBUFFER
+
+/**
+ * @}
+ */
