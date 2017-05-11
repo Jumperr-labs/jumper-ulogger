@@ -229,7 +229,7 @@ void gatt_handler_handle_ble_event(ble_evt_t *p_ble_evt, uLoggerGattHandler * ha
                 auth_reply.params.read.gatt_status               = BLE_GATT_STATUS_SUCCESS;
                 auth_reply.params.read.update = 1;
                 auth_reply.params.read.offset = 0;
-                
+
                 NRF_LOG_INFO("Replying to read\n");
                 err_code = sd_ble_gatts_rw_authorize_reply(p_ble_evt->evt.gatts_evt.conn_handle,
                                                            &auth_reply);

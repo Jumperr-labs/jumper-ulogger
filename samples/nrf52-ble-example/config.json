@@ -1,0 +1,24 @@
+{
+  "0": {
+    "type": "DEVICE_STARTED_EVENT",
+    "data": {}
+  },
+  "1": {
+    "type":"RADIO_STATE_EVENT",
+    "data": {
+      "is_on": "B"
+    }
+  },
+  "2": {
+    "type":"ADVERTISING_STATE_EVENT",
+    "data": {
+      "is_on": "B"
+    }
+  },
+  "3": {
+    "type": "BATTERY_EVENT",
+    "data": {
+      "level": "B"
+    }
+  }
+}
