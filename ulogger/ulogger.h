@@ -2,7 +2,7 @@
  * @file
  * @brief Main uLogger interface.
  *
- * @defgroup ulogger_core uLogger Core Module
+ * @defgroup ulogger_core uLogger Core
  * @{
  */
 #ifndef ULOGGER
@@ -14,10 +14,16 @@
 /**
  * @mainpage Jumper Ulogger
  * @section Introduction
- * This is the introduction
+ * Jumper uLogger is a lightweight and extensible logging and analytics tool designed with embedded development in mind, with a tiny footprint.
+ * @section ulogger_core_section uLogger Core
+ * @ref ulogger_core
  *
- * @section
- * Documentation: ulogger.h
+ * @section ubuffer_section uBuffer
+ * @ref ubuffer
+ *
+ * @section platforms Platforms
+ * @subsection nrf52_section nRF52
+ * @ref nrf52_platform
  */
 
 #include "ulogger_events.h"
