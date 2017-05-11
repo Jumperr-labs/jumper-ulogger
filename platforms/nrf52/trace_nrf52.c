@@ -18,7 +18,7 @@ void ulogger_trace_nrf_ble_event(ble_evt_t *p_ble_evt) {
         default:
             return; //not tracking other events now
     }
-    ulogger_log(&NRF_BLE_LOGGER, ULOGGER_INFO, ADVERTISING_STATE_EVENT, &state, sizeof(state));
+    ulogger_log(&NRF_BLE_LOGGER, ULOGGER_INFO, BLE_STATE_EVENT, &state, sizeof(state));
 }
 
 void ulogger_trace_nrf_ble_adv_event(ble_adv_evt_t ble_adv_evt) {
