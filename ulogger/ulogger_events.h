@@ -12,7 +12,7 @@ typedef struct {
 
 typedef struct {
     uint8_t is_on;
-} radio_state_event_data_t;
+} advertising_state_event_t;
 
 typedef struct {
     uint8_t level;

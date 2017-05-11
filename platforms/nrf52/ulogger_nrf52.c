@@ -20,7 +20,7 @@ static uLoggerGattHandler handler;
 network_log_config config;
 
 static handler_func log_handlers[] = {&log_handler, &gatt_handler_handle_log};
-static void * handler_data[] = {NULL, &handler};
+static void * handler_data[] = {NULL, &config};
 
 static uint8_t gatt_buffer_data[GATT_BUFFER_SIZE];
 

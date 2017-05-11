@@ -18,6 +18,7 @@ void ulogger_trace_nrf_ble_event(ble_evt_t *p_ble_evt) {
 }
 
 void ulogger_trace_nrf_ble_adv_event(ble_adv_evt_t ble_adv_evt) {
+    advertising_state_event_t state;
     switch (ble_adv_evt) {
         case BLE_ADV_EVT_DIRECTED:            /**< Direct advertising mode has started. */
         case BLE_ADV_EVT_DIRECTED_SLOW:       /**< Directed advertising (low duty cycle) has started. */
@@ -25,15 +26,18 @@ void ulogger_trace_nrf_ble_adv_event(ble_adv_evt_t ble_adv_evt) {
         case BLE_ADV_EVT_SLOW:                /**< Slow advertising mode has started. */
         case BLE_ADV_EVT_FAST_WHITELIST:     /**< Fast advertising mode using the whitelist has started. */
         case BLE_ADV_EVT_SLOW_WHITELIST:
-            ULOGGER_LOG(&NRF_BLE_LOGGER, ULOGGER_INFO, START_ADVERTISING);
+            state.is_on = 1;
             break;
         case BLE_ADV_EVT_IDLE:
-            ULOGGER_LOG(&NRF_BLE_LOGGER, ULOGGER_INFO, STOP_ADVERTISING);
+            state.is_on = 0;
             break;
+
         case BLE_ADV_EVT_WHITELIST_REQUEST:
         case BLE_ADV_EVT_PEER_ADDR_REQUEST:
-            break; // ignore for now
+            return; // ignore for now
     }
+
+    ulogger_log(&NRF_BLE_LOGGER, ULOGGER_INFO, ADVERTISING_STATE_EVENT, &state, sizeof(state));
 }
 
 #endif

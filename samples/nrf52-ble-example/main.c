@@ -368,7 +368,10 @@ static void hts_sim_measurement(ble_hts_meas_t * p_meas)
 static void log_generating_function(void * p_context)
 {
     UNUSED_PARAMETER(p_context);
-    ULOGGER_LOG(&ulogger, ULOGGER_INFO, START_RADIO);
+    radio_state_event_data_t event = {
+        .is_on = 1
+    };
+    ulogger_log(&ulogger, ULOGGER_INFO, RADIO_STATE_EVENT, &event, sizeof(event));
 }
 
 /**@brief Function for the Timer initialization.
