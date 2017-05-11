@@ -2,7 +2,7 @@ PROJECT_NAME     := ble_app_template_pca10040_s132
 TARGETS          := nrf52832_xxaa
 OUTPUT_DIRECTORY := _build
 
-SDK_ROOT := ../../external/nrf5-sdk
+SDK_ROOT := $(NRF52_SDK)
 PROJ_DIR := .
 ULOGGER_DIR := ../../ulogger
 PLATFORM_DIR := ../../platforms/nrf52
