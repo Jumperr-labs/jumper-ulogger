@@ -120,8 +120,6 @@
 static uint16_t       m_conn_handle = BLE_CONN_HANDLE_INVALID;                  /**< Handle of the current connection. */
 static nrf_ble_gatt_t m_gatt;                                                   /**< GATT module instance. */
 
-APP_TIMER_DEF(log_generating_timer);
-
 /* Snesorsim definitions */
 
 static ble_bas_t      m_bas;                                                        /**< Structure used to identify the battery service. */
@@ -364,16 +362,6 @@ static void hts_sim_measurement(ble_hts_meas_t * p_meas)
     }
 }
 
-
-static void log_generating_function(void * p_context)
-{
-    UNUSED_PARAMETER(p_context);
-    radio_state_event_data_t event = {
-        .is_on = 1
-    };
-    ulogger_log(&ulogger, ULOGGER_INFO, RADIO_STATE_EVENT, &event, sizeof(event));
-}
-
 /**@brief Function for the Timer initialization.
  *
  * @details Initializes the timer module. This creates and starts application timers.
@@ -391,11 +379,6 @@ static void timers_init(void)
     err_code = app_timer_create(&m_battery_timer_id,
                                 APP_TIMER_MODE_REPEATED,
                                 battery_level_meas_timeout_handler);
-    APP_ERROR_CHECK(err_code);
-
-    err_code = app_timer_create(&log_generating_timer,
-                                APP_TIMER_MODE_REPEATED,
-                                log_generating_function);
     APP_ERROR_CHECK(err_code);
 
     // Create timers.
@@ -687,8 +670,6 @@ static void conn_params_init(void)
 static void application_timers_start(void)
 {
     ret_code_t err_code;
-    err_code = app_timer_start(log_generating_timer, APP_TIMER_TICKS(1000)  , NULL);
-    APP_ERROR_CHECK(err_code);
 
     err_code = app_timer_start(m_battery_timer_id, BATTERY_LEVEL_MEAS_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
@@ -727,6 +708,7 @@ static void on_adv_evt(ble_adv_evt_t ble_adv_evt)
     ret_code_t err_code;
     ulogger_trace_nrf_ble_adv_event(ble_adv_evt);
 
+    NRF_LOG_INFO("Adv evt %d.\r\n", ble_adv_evt);
     switch (ble_adv_evt)
     {
         case BLE_ADV_EVT_FAST:
@@ -1108,6 +1090,7 @@ int main(void)
     ulogger_init_nrf52(&ulogger);
     // Start execution.
     NRF_LOG_INFO("Template example started.\r\n");
+    ULOGGER_LOG(&ulogger, ULOGGER_INFO, DEVICE_STARTED_EVENT);
     application_timers_start();
 
     advertising_start(erase_bonds);

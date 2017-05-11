@@ -5,6 +5,7 @@
 #define RADIO_STATE_EVENT       1
 #define ADVERTISING_STATE_EVENT 2
 #define ULOGGER_BATTERY_EVENT   3
+#define BLE_STATE_EVENT         4
 
 typedef struct {
     uint8_t is_on;
@@ -17,6 +18,10 @@ typedef struct {
 typedef struct {
     uint8_t level;
 } battery_state_event_data_t;
+
+typedef struct {
+    uint8_t connected;
+} ble_state_event_t;
 
 #define PLATFORM_EVENTS_START   10000
 
