@@ -57,7 +57,7 @@ extern uLogger logger;
 void logger_send_buffer(void * parameters) {
   while (1) {
     osi_Sleep(TIME_IN_MS);
-    ULOGGER_LOG(&logger, ULOGGER_INFO, START_RADIO);
+    //ULOGGER_LOG(&logger, ULOGGER_INFO, START_RADIO);
   }
   
 }

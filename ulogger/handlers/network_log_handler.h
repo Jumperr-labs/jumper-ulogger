@@ -31,6 +31,6 @@ int network_logger_init(network_log_config * config, uint8_t * buffer, size_t bu
 
 void netowork_logger_periodic_callback(void * data);
 
-HandlerReturnType network_handler_log(network_log_config * config, LogLevel level, EventType event_type, timestamp time, void * log_data, size_t data_length);
+HandlerReturnType network_handler_log(void * context, LogLevel level, EventType event_type, timestamp time, void * log_data, size_t data_length);
 
 #endif

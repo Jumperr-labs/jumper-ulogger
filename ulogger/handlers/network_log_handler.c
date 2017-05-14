@@ -4,9 +4,9 @@
 #include <stdbool.h>
 #include "network_log_handler.h"
 
-HandlerReturnType network_handler_log(network_log_config * config, LogLevel level, EventType event_type, timestamp time, void * log_data, size_t data_length) {
+HandlerReturnType network_handler_log(void * context, LogLevel level, EventType event_type, timestamp time, void * log_data, size_t data_length) {
     uLoggerEventHeader * stored_event = NULL;
-
+    network_log_config * config = (network_log_config*) context;
     if (ubuffer_allocate_next(&config->buffer, (void **)&stored_event, sizeof(uLoggerEventHeader) + data_length)) {
               return HANDLER_FAIL;
     }
