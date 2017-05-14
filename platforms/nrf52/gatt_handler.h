@@ -2,6 +2,8 @@
  * @file
  * @brief Handler implementation for sending data over GATT to the HCI proxy.
  * The GATT handler handles everything related to initialising its own service, charactaristic, and managing the supplied buffer.
+ * @defgroup nrf52_platform nRF52 Platform
+ * @{
  */
 #ifndef JUMPER_ULOGGER_GATT_HANDLER_H
 #define JUMPER_ULOGGER_GATT_HANDLER_H
@@ -54,3 +56,6 @@ void gatt_handler_handle_ble_event(ble_evt_t *p_ble_evt, uLoggerGattHandler * ha
 #endif
 
 #endif //JUMPER_ULOGGER_GATT_HANDLER_H
+/**
+ * @}
+ */

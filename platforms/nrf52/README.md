@@ -1,6 +1,14 @@
 # nRF52 Readme
 Follow these instructions to integrate Jumper Insights to an nRF52 project. Note how small the footprint is? We also made sure the bandwidth and energy requirements are minimal.
-## Relevant code files
+
+The nRF52 is using GATT protocol to send events to a Linux gateway over BLE.
+The gateway should have the BLE Logger running. Check it [this repo](https://github.com/Jumperr-labs/jumper-ble-logger)
+
+## How It Works
+When a logging event occures it is being saved to a buffer. Using an RTC handle, every given time interval the logged events will be sent over BLE to the gateway.
+
+## Adding the uLogger to Your nRF52 Project
+### Relevant code files
 Add the following files and include paths to your code:
 ```
 Repository Root
@@ -23,7 +31,6 @@ Repository Root
     ├── ulogger.c
     └── ulogger.h
 ```
-## Setup
 
 ### Changes to main.c
 * Add the following includes to your set of includes:
@@ -41,9 +48,9 @@ ble_cfg.common_cfg.vs_uuid_cfg.vs_uuid_count = 1;
 ulogger_handle_ble_event(p_ble_evt);
 ```
 
-## Linking
+### Linking
 
-### ARMGCC
+#### ARMGCC
 Moving on to the *.ld file, in our case `ble_app_template_gcc_nrf52.ld`:
 
 From the `Memory.RAM` section, push the origin 0x10 bytes forward and reduce the length by 0x10 bytes. Based on the original example, this means changing this line:
@@ -54,7 +61,7 @@ To this:
 ```
 RAM (rwx) :  ORIGIN = 0x20001fd0, LENGTH = 0xe030
 ```
-### IAR
+#### IAR
 In your *.icf file (here we used `ble_app_template_iar_nRF5x.icf`, change RAM start by 0x10 bytes, from:
 ```
 define symbol __ICFEDIT_region_RAM_start__   = 0x20001fc0;
@@ -64,7 +71,7 @@ To this:
 define symbol __ICFEDIT_region_RAM_start__   = 0x20001fd0;
 ```
 
-## Initialization
+### Initialization
 Add a definition for the uLogger struct, we added following code right after the `assert_nrf_callback`:
 
 ```
@@ -76,14 +83,12 @@ Finally on the `main(void)` function, add the following line when initializing s
 ulogger_init_nrf52(&ulogger);
 ```
 Note - this has to happen after the SoftDevice is configured and BLE is initialized.
-## Tracing
+### Tracing
 To trace advertising events add the following line to the beginning of the `on_adv_evt` function
 ```
 ulogger_trace_nrf_ble_adv_event(ble_adv_evt);
 ```
-## Configuration
-
-### GATT Logger Configuration
+### Configuration
 Create a copy of `logging_config_example.h` and add it to your project. Currently there are two configuration options.
 
 You can edit either of these options, depending on the number of log events you intend to add per second or your power budget.
@@ -91,4 +96,3 @@ You can edit either of these options, depending on the number of log events you 
 The configuration option are:
 * `GATT_BUFFER_SIZE` - Buffer size in bytes, currently defaults to 200.
 * `LOG_SEND_PERIOD_MS` - Period between sending the logging buffer to the gateway, currently defaults to 5000 ms.
-
