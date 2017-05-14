@@ -265,7 +265,6 @@ static int send_to_gatt(void * network_context, uint8_t * data, uint32_t length)
 
 HandlerReturnType gatt_handler_handle_log(void * handler_data, LogLevel level, EventType event_type, timestamp time, void * data, size_t data_length) {
     network_log_config * config = (network_log_config *) handler_data;
- //HandlerReturnType network_handler_log(network_log_config * config, LogLevel level, EventType event_type, timestamp time, void * log_data, size_t data_length);
     return network_handler_log(config, level, event_type, time, data, data_length);
 }
 

@@ -94,7 +94,7 @@ To trace advertising events add the following line to the beginning of the `on_a
 ulogger_trace_nrf_ble_adv_event(ble_adv_evt);
 ```
 ### Configuration
-Create a copy of `logging_config_example.h` and add it to your project. Currently there are two configuration options.
+Create a copy of `logging_config.h` and add it to your project. Currently there are two configuration options.
 
 You can edit either of these options, depending on the number of log events you intend to add per second or your power budget.
 
