@@ -16,6 +16,7 @@
 #include "hw_memmap.h"
 #include "timer.h"
 #include "utils.h"
+#include "network_log_handler.h"
 #include <stdio.h>
 
 #include "common.h"
@@ -25,6 +26,9 @@
 static volatile unsigned long timer_base;
 static volatile unsigned long timer_timestamp = 0;
 
+static network_log_config keen_config;
+static uint8_t keen_buffer[KEEN_BUFFER_SIZE];
+
 static char * log_level_strings[] = {
             "DEBUG",
             "INFO",
@@ -33,12 +37,12 @@ static char * log_level_strings[] = {
             "FATAL"
 };
 
-HandlerReturnType log_handler(LogLevel level, EventType event_type, timestamp time, void * handler_data, ...);
+HandlerReturnType log_handler(void *handler_data, LogLevel level, EventType event_type, timestamp time, void * log_data, size_t data_length);
 
-static handler_func log_handlers[] = {&log_handler};
-static void * handler_data[] = {NULL};
+static handler_func log_handlers[] = {&log_handler, &network_handler_log};
+static void * handler_data[] = {NULL, &keen_config};
 
-HandlerReturnType log_handler(LogLevel level, EventType event_type, timestamp time, void * handler_data, ...) {
+HandlerReturnType log_handler(void *handler_data, LogLevel level, EventType event_type, timestamp time, void * log_data, size_t data_length) {
     UART_PRINT("Level %s\r\nEvent: %d\r\nTime: %d\r\n", (uint32_t)log_level_strings[level], event_type, time);
     return HANDLER_SUCCESS;
 }
@@ -53,7 +57,7 @@ extern uLogger logger;
 void logger_send_buffer(void * parameters) {
   while (1) {
     osi_Sleep(TIME_IN_MS);
-    ulogger_log(&logger, ULOGGER_INFO, START_RADIO);
+    ULOGGER_LOG(&logger, ULOGGER_INFO, START_RADIO);
   }
   
 }
@@ -78,7 +82,8 @@ void ulogger_init_cc3200(uLogger * logger) {
                                 (const signed char*)"Send Buffer Task", \
                                 ULOGGER_STACK_SIZE, NULL, 1, NULL );
     // uLoggerErrorCode ulogger_init(void *ulogger, handler_func *handlers, void **handlers_data, size_t num_handlers);
-    ulogger_init(logger, log_handlers, handler_data, (size_t) 1);
+    keen_handler_init(&keen_config, &keen_buffer, KEEN_BUFFER_SIZE);
+    ulogger_init(logger, log_handlers, handler_data, (size_t) 2);
 }
 
 #endif
