@@ -1,4 +1,4 @@
-# Jumper uLogger - Nordic nRF52 Sample Project
+# Jumper µlogger - Nordic nRF52 Sample Project
 This sample project is the best way to get you started with Jumper Insights for the Nordic nRF52.
 
 ## Prerequisites

@@ -1,5 +1,5 @@
 # Porting Guide
-If your platform is not supported. You can create a ulogger port for your platform.
+If your platform is not supported. You can create a µlogger port for your platform.
 
 1. Add _"ulogger.h"_ and _"ulogger.c"_ to your project
 2. `include "ulogger.h"`
@@ -20,7 +20,7 @@ If your platform is not supported. You can create a ulogger port for your platfo
       *data = (timestamp) tv.tv_sec;
   }
   ```
-5. Declare a uLogger struct, such as `uLogger logger`
+5. Declare a µlogger struct, such as `uLogger logger`
 6. Initialize it with any number of handlers - "print to uart" handlers, "send to network" handlers, the sky is the limit! 
   ```c 
   handler_func log_handlers[0];
