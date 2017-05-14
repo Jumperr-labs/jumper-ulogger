@@ -10,7 +10,7 @@ http://docs.jumper.io/ulogger/index.html
 Currently we support nRF52 logging with a GATT service out of the box. Samples and further documentation available [here](https://github.com/Jumperr-labs/jumper-ulogger/tree/master/platforms/nrf52).
 
 ## µLogger Events
-µLogger is made for logging in embedded software, RTOS or bare-metal firmware. uLogger should be used for logging structured data such as battery level, radio events, interrupts, etc. uLogger should not be used for logging arbitrary data such as customized strings.
+µLogger is made for logging in embedded software, RTOS or bare-metal firmware. µLogger should be used for logging structured data such as battery level, radio events, interrupts, etc. µLogger should not be used for logging arbitrary data such as customized strings.
 
 Event types and data structures can be easily defined in the _"ulogger_events.h"_ file. Here is an example:
 ```c
