@@ -1,7 +1,7 @@
-# Jumper uLogger
+# Jumper µLogger
 This project is part of the Jumper Insights framework. Visit https://www.jumper.io/insights/ for more information.
 
-Jumper uLogger (pronounced micro-logger) is a lightweight and extensible logging and analytics tool designed with embedded development in mind, with a tiny footprint.
+Jumper µLogger is a lightweight and extensible logging and analytics tool designed with embedded development in mind, with a tiny footprint.
 
 ## Documentation
 http://docs.jumper.io/ulogger/index.html
@@ -9,8 +9,8 @@ http://docs.jumper.io/ulogger/index.html
 ## Samples and platforms
 Currently we support nRF52 logging with a GATT service out of the box. Samples and further documentation available [here](https://github.com/Jumperr-labs/jumper-ulogger/tree/master/platforms/nrf52).
 
-## uLogger Events
-uLogger is made for logging in embedded software, RTOS or bare-metal firmware. uLogger should be used for logging structured data such as battery level, radio events, interrupts, etc. uLogger should not be used for logging arbitrary data such as customized strings.
+## µLogger Events
+µLogger is made for logging in embedded software, RTOS or bare-metal firmware. uLogger should be used for logging structured data such as battery level, radio events, interrupts, etc. uLogger should not be used for logging arbitrary data such as customized strings.
 
 Event types and data structures can be easily defined in the _"ulogger_events.h"_ file. Here is an example:
 ```c
@@ -21,7 +21,7 @@ typedef struct {
 } battery_state_event_data_t;
 ```
 
-## Using the uLogger
+## Using the µLogger
 - Define your events in the _"ulogger_events.h"_ file (Check it out for examples)
 - API for logging events:
   
