@@ -2,7 +2,7 @@
 Jumper uLogger is a lightweight and extensible logging and analytics tool designed with embedded development in mind, with a tiny footprint.
 
 ## Documentation
-LINk TO THE DOCUMENTATION!
+http://docs.jumper.io/ulogger/index.html
 
 ## How to use uLogger
 uLogger is similar to other logging frameworks from languages such as python:
