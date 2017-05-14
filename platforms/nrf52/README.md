@@ -4,6 +4,11 @@ Follow these instructions to integrate Jumper Insights to an nRF52 project. Note
 The nRF52 is using GATT protocol to send events to a Linux gateway over BLE.
 The gateway should have the BLE Logger running. Check it [this repo](https://github.com/Jumperr-labs/jumper-ble-logger)
 
+## Getting Started
+Check out this [tutorial](https://github.com/Jumperr-labs/jumper-ulogger/tree/master/samples/nrf52-ble-sample-project) to get started with a sample project for the nRF52.
+
+You can also use this [template project](https://github.com/Jumperr-labs/jumper-ulogger/tree/master/samples/nrf52-ble-template) to embed jumper's uLogger in your own code.
+
 ## How It Works
 When a logging event occures it is being saved to a buffer. Using an RTC handle, every given time interval the logged events will be sent over BLE to the gateway.
 
