@@ -298,9 +298,9 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
 static void battery_level_update(void)
 {
     ret_code_t err_code;
-    uint8_t  battery_level;
+    battery_state_event_data_t  battery_level;
 
-    battery_level = (uint8_t)sensorsim_measure(&m_battery_sim_state, &m_battery_sim_cfg);
+    battery_level.level = (uint8_t)sensorsim_measure(&m_battery_sim_state, &m_battery_sim_cfg);
     NRF_LOG_INFO("Battery level is %d\n", battery_level);
     ulogger_log(&ulogger, ULOGGER_INFO, ULOGGER_BATTERY_EVENT, &battery_level, 1);
     err_code = ble_bas_battery_level_update(&m_bas, battery_level);
