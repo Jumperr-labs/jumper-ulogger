@@ -247,7 +247,10 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
 static void log_generating_function(void * p_context)
 {
     UNUSED_PARAMETER(p_context);
-    ULOGGER_LOG(&ulogger, ULOGGER_INFO, START_RADIO);
+    static battery_state_event_data_t battery_level = {100};
+    battery_level.level = battery_level.level - 1;
+    if (battery_level.level == 0) battery_level.level = 100;
+    ulogger_log(&ulogger, ULOGGER_INFO, ULOGGER_BATTERY_EVENT, &battery_level, 1);
 }
 
 /**@brief Function for the Timer initialization.
@@ -857,6 +860,7 @@ int main(void)
     ulogger_init_nrf52(&ulogger);
     // Start execution.
     NRF_LOG_INFO("Template example started.\r\n");
+    ULOGGER_LOG(&ulogger, ULOGGER_INFO, DEVICE_STARTED_EVENT);
     application_timers_start();
 
     advertising_start(erase_bonds);

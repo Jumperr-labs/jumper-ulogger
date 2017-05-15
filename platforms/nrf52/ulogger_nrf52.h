@@ -14,7 +14,7 @@
 
 /**
  * @brief Initializes the supplied uLogger structure
- * @param ulogger An allocated memory in the size of SIZEOF_ULOGGER
+ * @param ulogger A uLogger handle
  */
 void ulogger_init_nrf52(uLogger* logger);
 

@@ -301,9 +301,9 @@ static void battery_level_update(void)
     battery_state_event_data_t  battery_level;
 
     battery_level.level = (uint8_t)sensorsim_measure(&m_battery_sim_state, &m_battery_sim_cfg);
-    NRF_LOG_INFO("Battery level is %d\n", battery_level);
+    NRF_LOG_INFO("Battery level is %d\n", battery_level.level);
     ulogger_log(&ulogger, ULOGGER_INFO, ULOGGER_BATTERY_EVENT, &battery_level, 1);
-    err_code = ble_bas_battery_level_update(&m_bas, battery_level);
+    err_code = ble_bas_battery_level_update(&m_bas, battery_level.level);
     if ((err_code != NRF_SUCCESS) &&
         (err_code != NRF_ERROR_INVALID_STATE) &&
         (err_code != NRF_ERROR_RESOURCES) &&
