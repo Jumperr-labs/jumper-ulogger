@@ -28,6 +28,6 @@ This sample project is the best way to get you started with Jumper Insights for 
 You will notice that your gateway process (in this case gatttool) will not be notified on logging events and will work the same as it would if the BLE Logger wasn't running.
 
 ### Want More?
-Check out the _"nrf52-ble-template"_ project and _"<this_repo>/platforms/nrf52"_ to implement this on your own project.
+Check out our support for [nRF52](https://github.com/Jumperr-labs/jumper-ulogger/tree/master/platforms/nrf52) and the [nrf52-ble-template project](https://github.com/Jumperr-labs/jumper-ulogger/tree/master/samples/nrf52-ble-template) to implement this on your own project.
 
 We are happy to help! Feel free to contact us about any issue and give us your feedback at [info@jumper.io](mailto:info@jumper.io)
