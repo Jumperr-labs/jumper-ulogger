@@ -94,10 +94,12 @@ To trace advertising events add the following line to the beginning of the `on_a
 ulogger_trace_nrf_ble_adv_event(ble_adv_evt);
 ```
 ### Configuration
-Create a copy of `logging_config.h` and add it to your project. Currently there are two configuration options.
+Create a copy of _"logging_config.h"_ and add it to your project. Currently there are two configuration options.
 
 You can edit either of these options, depending on the number of log events you intend to add per second or your power budget.
 
 The configuration option are:
 * `GATT_BUFFER_SIZE` - Buffer size in bytes, currently defaults to 200.
 * `LOG_SEND_PERIOD_MS` - Period between sending the logging buffer to the gateway, currently defaults to 5000 ms.
+
+Inside _"ulogger_nrf52.h"_, you will notice this line: `#define ULOGGER_RTC 2`. This will set which RTC is being used for creating timestamps. You should avoid using this RTC in your code.
