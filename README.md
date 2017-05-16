@@ -4,7 +4,7 @@ This project is part of the Jumper Insights framework. Visit https://www.jumper.
 Jumper µLogger is a lightweight and extensible logging and analytics tool designed with embedded development in mind, with a tiny footprint.
 
 ## Documentation
-http://docs.jumper.io/ulogger/index.html
+http://docs.jumper.io
 
 ## Samples and platforms
 Currently we support nRF52 logging with a GATT service out of the box. Samples and further documentation available [here](https://github.com/Jumperr-labs/jumper-ulogger/tree/master/platforms/nrf52).
