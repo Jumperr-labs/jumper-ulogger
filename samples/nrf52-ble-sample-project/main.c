@@ -79,9 +79,7 @@
 #include "nrf_gpio.h"
 #include "ble_conn_state.h"
 #include "nrf_ble_gatt.h"
-#include "ulogger.h"
 #include "ulogger_nrf52.h"
-#include "trace_nrf52.h"
 
 #define NRF_LOG_MODULE_NAME "APP"
 #include "nrf_log.h"
