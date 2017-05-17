@@ -19,15 +19,17 @@ static int keen_handler_send(void * network_context, uint8_t * data, uint32_t le
 static bool keen_handler_can_send(void * network_context);
 static int keen_handler_timer_start(network_log_config * config);
 
-int keen_handler_init(network_log_config * config, uint8_t * event_buffer, size_t event_buffer_size, keen_context_t * context, uint8_t * encoding_buffer, size_t encoding_buffer_size) {
-    context->encoding_buffer = encoding_buffer;
-    context->encodng_buffer_size = encoding_buffer_size;
+int keen_handler_init(network_log_config * config, uint8_t * event_buffer, size_t event_buffer_size, json_formatter_context * context, uint8_t * encoding_buffer, size_t encoding_buffer_size) {
+    context->buffer = encoding_buffer;
+    context->buffer_length = encoding_buffer_size;
 
     config->log_send_period = KEEN_HANDLER_LOG_SEND_PERIOD;
-    config->context = (void *) context;
+    config->context = (void *) NULL;
     config->send = keen_handler_send;
     config->can_send = keen_handler_can_send;
     config->callback = netowork_logger_periodic_callback;
+    config->formatter_context = context;
+    config->format_method = json_formatter_format;
     network_logger_init(config, event_buffer, event_buffer_size);
     keen_handler_timer_start(config); 
     
@@ -39,33 +41,7 @@ static bool keen_handler_can_send(void * network_context) {
 }
 
 static int keen_handler_send(void * network_context, uint8_t * data, uint32_t length) {
-    keen_context_t * context = (keen_context_t *) network_context;
-    uLoggerEventHeader * event = (uLoggerEventHeader *) data;
-    uint32_t error_code = 0;
-    uint8_t * additional_data = data + sizeof(uLoggerEventHeader);
-    memset(context->encoding_buffer, 0, context->encodng_buffer_size);
-    char * buf = context->encoding_buffer;
-    switch (event->event_type) {
-    case DEVICE_STARTED_EVENT:
-        error_code = add_event(PACK_EVENT_NAME(DEVICE_STARTED_EVENT), "{}");
-        break;
-    case WLAN_EVENT:
-    {
-        wlan_event_t * event_metadata = (wlan_event_t *) additional_data;
-        START_OBJECT(buf);
-        PACK_NAME_AND_INT(buf, event_metadata, is_connected);
-        PACK_NAME_AND_STRING(buf, event_metadata, bssid);
-        END_OBJECT(buf);
-        error_code = add_event(PACK_EVENT_NAME(WLAN_EVENT), context->encoding_buffer);
-    }
-    break;
-    default:
-    {
-        snprintf(context->encoding_buffer, context->encodng_buffer_size, "{\"event_id\": %d}", event->event_type);
-        error_code = add_event("default", context->encoding_buffer);
-    }
-    break;
-    }
+    int error_code = add_events(data);
     UART_PRINT("Sending data....... %d\n", error_code);
     return error_code;
 }

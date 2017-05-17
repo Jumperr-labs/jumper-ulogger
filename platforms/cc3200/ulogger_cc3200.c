@@ -28,10 +28,10 @@
 static volatile unsigned long timer_base;
 static volatile unsigned long timer_timestamp = 0;
 
-static keen_context_t kenn_context;
-static network_log_config keen_config;
+static json_formatter_context json_context = {0};
+static network_log_config keen_config = {0};
 static uint8_t keen_buffer[KEEN_BUFFER_SIZE];
-static uint8_t keen_encoding_buffer[KEEN_BUFFER_SIZE];
+static uint8_t json_encoding_buffer[KEEN_BUFFER_SIZE];
 
 static char * log_level_strings[] = {
             "DEBUG",
@@ -71,7 +71,7 @@ void get_timestamp(timestamp* time)
 
 void ulogger_init_cc3200(uLogger * logger) {
     timer_init();
-    keen_handler_init(&keen_config, &keen_buffer, KEEN_BUFFER_SIZE, &kenn_context, &keen_encoding_buffer, KEEN_BUFFER_SIZE);
+    keen_handler_init(&keen_config, &keen_buffer, KEEN_BUFFER_SIZE, &json_context, &json_encoding_buffer, KEEN_BUFFER_SIZE);
     ulogger_init(logger, log_handlers, handler_data, (size_t) 2);
 }
 
