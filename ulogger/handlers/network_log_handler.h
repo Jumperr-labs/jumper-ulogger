@@ -8,6 +8,7 @@
 typedef int (*send_to_network)(void * network_context, uint8_t * data, uint32_t length);
 typedef bool (*can_send_to_network)(void * network_context);
 typedef void (*periodic_callback_function)(void * config);
+typedef int (*formatter)(uLoggerEventHeader * event, void * event_body, void * formatter_context);
 
 typedef struct {
     uint32_t log_send_period; 

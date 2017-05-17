@@ -6,6 +6,7 @@
 #define ADVERTISING_STATE_EVENT 2
 #define ULOGGER_BATTERY_EVENT   3
 #define BLE_STATE_EVENT         4
+#define WLAN_EVENT              5
 
 typedef struct {
     uint8_t is_on;
@@ -22,6 +23,11 @@ typedef struct {
 typedef struct {
     uint8_t connected;
 } ble_state_event_t;
+
+typedef struct {
+    uint8_t is_connected;
+    char bssid[33]; //should be configured according to SSID_LEN_MAX
+} wlan_event_t;
 
 #define PLATFORM_EVENTS_START   10000
 
