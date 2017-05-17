@@ -27,11 +27,11 @@ typedef struct {
   
   `uLoggerErrorCode ulogger_log (void *ulogger, LogLevel level, EventType 	event_type, void *log_data, size_t data_length)`
   
-  example:
+- example:
     - You can log simple events with no data:
-    
+
         `ULOGGER_LOG(&ulogger, ULOGGER_INFO, DEVICE_STARTED_EVENT);`
-    
+
     - Or you can log more complex events such as:
         ```c
         battery_level.level = 91;
