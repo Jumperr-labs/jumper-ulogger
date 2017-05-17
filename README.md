@@ -28,10 +28,15 @@ typedef struct {
   `uLoggerErrorCode ulogger_log (void *ulogger, LogLevel level, EventType 	event_type, void *log_data, size_t data_length)`
   
   example:
-  ```c
-  battery_level.level = 91;
-  ulogger_log(&ulogger, ULOGGER_INFO, ULOGGER_BATTERY_EVENT, &battery_level, 1);
-  ```
+    - You can log simple events with no data:
+    
+        `ULOGGER_LOG(&ulogger, ULOGGER_INFO, DEVICE_STARTED_EVENT);`
+    
+    - Or you can log more complex events such as:
+        ```c
+        battery_level.level = 91;
+        ulogger_log(&ulogger, ULOGGER_INFO, ULOGGER_BATTERY_EVENT, &battery_level, 1);
+        ```
 
 ## Porting
 Check out our [porting guide](https://github.com/Jumperr-labs/jumper-ulogger/blob/master/porting.md)
