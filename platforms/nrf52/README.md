@@ -69,7 +69,6 @@ To this:
 define symbol __ICFEDIT_region_RAM_start__   = 0x20001fd0;
 ```
 ### Initialization
-* Add a definition for the uLogger struct: `uLogger ulogger;`
 * On the `main(void)` function, add the following line when initializing services `ulogger_init_nrf52(&ulogger);`
 
     *Note - this has to happen after the SoftDevice is configured and BLE is initialized.*

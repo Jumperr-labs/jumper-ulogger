@@ -24,9 +24,9 @@ nrf52_package_dir_name=jumper_ulogger
 nrf52_package_dir=${out_dir}/${nrf52_package_dir_name}
 
 if [ -z $version ] ; then
-    nrf52_package_zip=${out_dir}/jumper_ulogger_nrf52.zip
+    nrf52_package_zip=${out_dir}/jumper-ulogger-nrf52.zip
 else
-    nrf52_package_zip=${out_dir}/jumper_ulogger_nrf52-${version}.zip
+    nrf52_package_zip=${out_dir}/jumper-ulogger-nrf52-${version}.zip
 fi
 
 mkdir -p ${nrf52_package_dir}

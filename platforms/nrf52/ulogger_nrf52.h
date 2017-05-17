@@ -13,6 +13,8 @@
 
 #define ULOGGER_RTC 2
 
+uLogger ulogger;
+
 /**
  * @brief Initializes the supplied uLogger structure
  * @param ulogger A uLogger handle
