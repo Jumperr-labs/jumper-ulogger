@@ -35,14 +35,14 @@ typedef struct {
 uint32_t gatt_handler_init(network_log_config * config, uint8_t * buffer, uint32_t buffer_length);
 
 /**
- *
- * @param handler_data
+ * @brief A log handler, saves a logging event into a buffer.
+ * @param handler_data A pointer to the network_log_config
  * @param level
  * @param event_type
  * @param time
- * @param data
- * @param data_length
- * @return
+ * @param data Event data
+ * @param data_length Size of data in bytes
+ * @return HANDLER_SUCCESS or HANDLER_FAIL
  */
 HandlerReturnType gatt_handler_handle_log(void * handler_data, LogLevel level, EventType event_type, timestamp time, void * data, size_t data_length);
 

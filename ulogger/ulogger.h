@@ -72,20 +72,18 @@ typedef struct {
     size_t num_handlers;
 } uLogger;
 
-#define SIZEOF_ULOGGER sizeof(uLogger)
-
 void get_timestamp(timestamp *data);
 
 /**
  * @brief Initializes the supplied uLogger structure
- * @param ulogger An allocated memory in the size of SIZEOF_ULOGGER
+ * @param ulogger A uLogger handle
  * @param handlers A pointer to an array of logging handlers, handlers publish the data passed to the ulogger, in ulogger_log().
  * @param handlers_data Handlers context, a handler can define a context that will be supplied when passing log data. For example
  * it can be useful in handlers relating to networking.
  * @param num_handlers
  * @return HANDLER_SUCCESS when successful, error code otherwise.
  */
-uLoggerErrorCode ulogger_init(void *ulogger, handler_func *handlers, void **handlers_data, size_t num_handlers);
+uLoggerErrorCode ulogger_init(uLogger *ulogger, handler_func *handlers, void **handlers_data, size_t num_handlers);
 
 /**
  *
@@ -96,7 +94,7 @@ uLoggerErrorCode ulogger_init(void *ulogger, handler_func *handlers, void **hand
  * @param data_length
  * @return HANDLER_SUCCESS when successful, error code otherwise.
  */
-uLoggerErrorCode ulogger_log(void *ulogger, LogLevel level, EventType event_type, void * log_data, size_t data_length);
+uLoggerErrorCode ulogger_log(uLogger *ulogger, LogLevel level, EventType event_type, void * log_data, size_t data_length);
 
 #endif // ULOGGER
 
