@@ -3,7 +3,7 @@
 #if ULOGGER_PLATFORM == PLATFORM_CC3200
 
 #include "ulogger.h"
-#include "keen_handler.h"
+#include "events_api_handler.h"
 #include "network_log_handler.h"
 
 // Driverlib includes
@@ -71,7 +71,7 @@ void get_timestamp(timestamp* time)
 
 void ulogger_init_cc3200(uLogger * logger) {
     timer_init();
-    keen_handler_init(&keen_config, &keen_buffer, KEEN_BUFFER_SIZE, &json_context, &json_encoding_buffer, KEEN_BUFFER_SIZE);
+    evemts_api_handler_init(&keen_config, &keen_buffer, KEEN_BUFFER_SIZE, &json_context, &json_encoding_buffer, KEEN_BUFFER_SIZE);
     ulogger_init(logger, log_handlers, handler_data, (size_t) 2);
 }
 
