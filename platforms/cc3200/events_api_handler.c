@@ -19,7 +19,7 @@ static int events_api_handler_send(void * network_context, uint8_t * data, uint3
 static bool events_api_handler_can_send(void * network_context);
 static int events_api_handler_timer_start(network_log_config * config);
 
-int evemts_api_handler_init(network_log_config * config, uint8_t * event_buffer, size_t event_buffer_size, json_formatter_context * context, uint8_t * encoding_buffer, size_t encoding_buffer_size) {
+int events_api_handler_init(network_log_config * config, uint8_t * event_buffer, size_t event_buffer_size, json_formatter_context * context, uint8_t * encoding_buffer, size_t encoding_buffer_size) {
     context->buffer = encoding_buffer;
     context->buffer_length = encoding_buffer_size;
 

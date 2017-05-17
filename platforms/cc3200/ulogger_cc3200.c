@@ -71,7 +71,7 @@ void get_timestamp(timestamp* time)
 
 void ulogger_init_cc3200(uLogger * logger) {
     timer_init();
-    evemts_api_handler_init(&keen_config, &keen_buffer, KEEN_BUFFER_SIZE, &json_context, &json_encoding_buffer, KEEN_BUFFER_SIZE);
+    events_api_handler_init(&keen_config, &keen_buffer, KEEN_BUFFER_SIZE, &json_context, &json_encoding_buffer, KEEN_BUFFER_SIZE);
     ulogger_init(logger, log_handlers, handler_data, (size_t) 2);
 }
 
