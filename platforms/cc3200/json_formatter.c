@@ -1,6 +1,6 @@
 #include "json_formatter.h"
 #include "json_encoding_helper.h"
-
+#include "logging_config.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -16,7 +16,7 @@ int json_formatter_format(void * formatter_context, uLoggerEventHeader * event,
     char * buf = context->buffer;
 
     START_OBJECT(buf);
-    START_ARRAY(buf, "default");
+    START_ARRAY(buf, KEEN_PROJECT_ID);
     START_OBJECT(buf);
     switch (event->event_type) {
         case DEVICE_STARTED_EVENT:
