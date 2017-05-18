@@ -29,12 +29,10 @@ Repository Root
 │   │   ├── ulogger_cc3200.c
 │   │   └── ulogger_cc3200.h
 │   └── nrf52
-├── porting.md
 ├── samples
 │   ├── cc3200-sample
-│   └─ nrf52-ble
+│   └── nrf52-ble
 └── ulogger
-    ├── CMakeLists.txt
     ├── handlers
     │   ├── network_log_handler.c
     │   └── network_log_handler.h
@@ -56,14 +54,12 @@ You can also override this method, more info in the documentation.
 In `logging_config.h` you have the following configurations avilable:
 
 ```
-#define JUMPER_API_VERSION  "3.0"
 #define JUMPER_PROJECT_ID  "000000000000000000000000"
 #define JUMPER_WRITE_KEY "000000000000000000000000"
 
 #define API_HANDLER_LOG_SEND_PERIOD 5000
 #define API_HANDLER_BUFFER_SIZE 300
 #define API_HANDLE_JSON_ENCODER_BUFFER_SIZE 200
-#define EVENTS_API_HANDLER_STACK_SIZE 1000
 ```
 
 * You must replace `JUMPER_PROJECT_ID` and `JUMPER_WRITE_KEY` with the keys you get from the jumper control panel.
