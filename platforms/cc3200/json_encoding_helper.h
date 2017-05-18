@@ -1,3 +1,8 @@
+/**@file
+ * @brief Hlper methods for json encoding.
+ * @ingroup cc3200_platform
+ * @{
+ */
 #ifndef JSON_ENCODING_HELPER_H
 #define JSON_ENCODING_HELPER_H
 
@@ -32,3 +37,6 @@
 #define PACK_EVENT_NAME(name) #name
 
 #endif //JSON_ENCODING_HELPER_H
+/**
+/* @}
+ */

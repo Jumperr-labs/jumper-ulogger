@@ -10,13 +10,14 @@
 
 int json_formatter_format(void * formatter_context, uLoggerEventHeader * event,
                           uint8_t ** formatted_event, size_t * formatted_event_length) {
+
     json_formatter_context * context = (json_formatter_context *) formatter_context;
     uint8_t * additional_data = ((uint8_t*)event) + sizeof(uLoggerEventHeader);
     memset(context->buffer, 0, context->buffer_length);
     char * buf = context->buffer;
 
     START_OBJECT(buf);
-    START_ARRAY(buf, KEEN_PROJECT_ID);
+    START_ARRAY(buf, JUMPER_PROJECT_ID);
     START_OBJECT(buf);
     switch (event->event_type) {
         case DEVICE_STARTED_EVENT:

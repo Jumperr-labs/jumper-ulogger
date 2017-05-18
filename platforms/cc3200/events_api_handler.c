@@ -7,9 +7,9 @@
 #include "common.h"
 #include "json_encoding_helper.h"
 
-char *api_version = KEEN_API_VERSION;
-char *project_id = KEEN_PROJECT_ID;
-char *write_key = KEEN_WRITE_KEY;
+char *api_version = JUMPER_API_VERSION;
+char *project_id = JUMPER_PROJECT_ID;
+char *write_key = JUMPER_WRITE_KEY;
 
 extern uint32_t g_ulStatus;
 
@@ -23,7 +23,7 @@ int events_api_handler_init(network_log_config * config, uint8_t * event_buffer,
     context->buffer = encoding_buffer;
     context->buffer_length = encoding_buffer_size;
 
-    config->log_send_period = KEEN_HANDLER_LOG_SEND_PERIOD;
+    config->log_send_period = API_HANDLER_LOG_SEND_PERIOD;
     config->context = (void *) NULL;
     config->send = events_api_handler_send;
     config->can_send = events_api_handler_can_send;
