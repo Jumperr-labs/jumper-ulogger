@@ -118,6 +118,8 @@
 static uint16_t       m_conn_handle = BLE_CONN_HANDLE_INVALID;                  /**< Handle of the current connection. */
 static nrf_ble_gatt_t m_gatt;                                                   /**< GATT module instance. */
 
+#define FW_VERSION                      "1"
+
 /* Snesorsim definitions */
 
 static ble_bas_t      m_bas;                                                        /**< Structure used to identify the battery service. */
@@ -1086,7 +1088,7 @@ int main(void)
     ulogger_init_nrf52(&ulogger);
     // Start execution.
     NRF_LOG_INFO("Template example started.\r\n");
-    ULOGGER_LOG(&ulogger, ULOGGER_INFO, DEVICE_STARTED_EVENT);
+    ulogger_log_string(&ulogger, ULOGGER_INFO, DEVICE_BOOT_EVENT, FW_VERSION);
     application_timers_start();
 
     advertising_start(erase_bonds);
