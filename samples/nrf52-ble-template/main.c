@@ -112,7 +112,7 @@ static uint16_t       m_conn_handle = BLE_CONN_HANDLE_INVALID;                  
 static nrf_ble_gatt_t m_gatt;                                                   /**< GATT module instance. */
 
 
-#define FW_VERSION                      "1"
+#define FW_VERSION                      "1.2.3"
 
 APP_TIMER_DEF(log_generating_timer);
 

@@ -1,9 +1,9 @@
 #ifndef NETWORK_LOG_HANDLER
 #define NETWORK_LOG_HANDLER
 
-#include "ubuffer.h"
 #include <stdbool.h>
-
+#include "compilers.h"
+#include "ubuffer.h"
 
 typedef int (*send_to_network)(void * network_context, uint8_t * data, uint32_t length);
 typedef bool (*can_send_to_network)(void * network_context);
@@ -21,11 +21,11 @@ typedef struct {
 #define NETWORK_LOGGER_VERSION 1
 
 typedef struct {
-    uint32_t version;
+    uint8_t version;
     EventType event_type;
     timestamp time;
-    size_t data_length;
-} uLoggerEventHeader;
+    uint8_t data_length;
+} __PACKED uLoggerEventHeader;
 
 int network_logger_init(network_log_config * config, uint8_t * buffer, size_t buffer_size);
 
