@@ -29,8 +29,8 @@ static volatile unsigned long timer_base;
 static volatile unsigned long timer_timestamp = 0;
 
 static json_formatter_context json_context = {0};
-static network_log_config keen_config = {0};
-static uint8_t keen_buffer[API_HANDLER_BUFFER_SIZE];
+static network_log_config events_api_handler_config = {0};
+static uint8_t events_api_buffer[API_HANDLER_BUFFER_SIZE];
 static uint8_t json_encoding_buffer[API_HANDLE_JSON_ENCODER_BUFFER_SIZE];
 
 static char * log_level_strings[] = {
@@ -44,7 +44,7 @@ static char * log_level_strings[] = {
 HandlerReturnType log_handler(void *handler_data, LogLevel level, EventType event_type, timestamp time, void * log_data, size_t data_length);
 
 static handler_func log_handlers[] = {&log_handler, &network_handler_log};
-static void * handler_data[] = {NULL, &keen_config};
+static void * handler_data[] = {NULL, &events_api_handler_config};
 
 HandlerReturnType log_handler(void *handler_data, LogLevel level, EventType event_type, timestamp time, void * log_data, size_t data_length) {
     UART_PRINT("Level: %s, Event: %d, Time: %d\r\n", (uint32_t)log_level_strings[level], event_type, time);
@@ -71,7 +71,7 @@ void get_timestamp(timestamp* time)
 
 void ulogger_init_cc3200(uLogger * logger) {
     timer_init();
-    events_api_handler_init(&keen_config, &keen_buffer, API_HANDLER_BUFFER_SIZE, &json_context, &json_encoding_buffer, API_HANDLE_JSON_ENCODER_BUFFER_SIZE);
+    events_api_handler_init(&events_api_handler_config, &events_api_buffer, API_HANDLER_BUFFER_SIZE, &json_context, &json_encoding_buffer, API_HANDLE_JSON_ENCODER_BUFFER_SIZE);
     ulogger_init(logger, log_handlers, handler_data, (size_t) 2);
 }
 

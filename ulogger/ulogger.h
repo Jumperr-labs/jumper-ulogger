@@ -36,7 +36,7 @@ typedef enum {
     ULOGGER_FAIL
 } uLoggerErrorCode;
 
-typedef uint32_t EventType;
+typedef uint8_t EventType;
 
 /**
  * Macro to conveniently define events with no additional data.
@@ -86,7 +86,7 @@ void get_timestamp(timestamp *data);
 uLoggerErrorCode ulogger_init(uLogger *ulogger, handler_func *handlers, void **handlers_data, size_t num_handlers);
 
 /**
- *
+ * @brief Send an event to the logging handlers
  * @param ulogger
  * @param level
  * @param event_type
@@ -95,6 +95,17 @@ uLoggerErrorCode ulogger_init(uLogger *ulogger, handler_func *handlers, void **h
  * @return HANDLER_SUCCESS when successful, error code otherwise.
  */
 uLoggerErrorCode ulogger_log(uLogger *ulogger, LogLevel level, EventType event_type, void * log_data, size_t data_length);
+
+/**
+ * @brief Send an event to the logging handlers where the event data is a null terminated string
+ * @param ulogger
+ * @param level
+ * @param event_type
+ * @param log_string
+ * @return HANDLER_SUCCESS when successful, error code otherwise.
+ */
+uLoggerErrorCode ulogger_log_string(uLogger *ulogger, LogLevel level, EventType event_type, char *log_string);
+
 
 #endif // ULOGGER
 

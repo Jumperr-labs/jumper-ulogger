@@ -1,4 +1,5 @@
 #include "ulogger.h"
+#include <string.h>
 
 uLoggerErrorCode ulogger_init(uLogger *ulogger, handler_func *handlers, void **handlers_data, size_t num_handlers) {
     ulogger->handlers = handlers;
@@ -25,4 +26,9 @@ uLoggerErrorCode ulogger_log(uLogger *ulogger, LogLevel level, EventType event_t
     }
 
     return return_value;
+}
+
+uLoggerErrorCode ulogger_log_string(uLogger *ulogger, LogLevel level, EventType event_type, char * log_string) {
+    size_t data_length = strlen(log_string) + 1;
+    return ulogger_log(ulogger, level, event_type, log_string, data_length);
 }
