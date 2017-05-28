@@ -26,7 +26,7 @@ int json_formatter_format(void * formatter_context, uLoggerEventHeader * event,
     START_OBJECT(buf);
     PACK_NAME_AND_MAC_ADDRESS(buf, "device_id", mac_address);
     switch (event->event_type) {
-        case DEVICE_STARTED_EVENT:
+        case DEVICE_BOOT_EVENT:
             PACK_EVENT_TYPE(buf, DEVICE_STARTED_EVENT);
             break;
         case WLAN_EVENT:

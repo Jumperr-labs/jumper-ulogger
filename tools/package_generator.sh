@@ -34,10 +34,6 @@ mkdir -p ${nrf52_package_dir}
 cp ${repo_dir}/ulogger/*.c ${nrf52_package_dir}
 cp ${repo_dir}/ulogger/*.h ${nrf52_package_dir}
 
-mkdir ${nrf52_package_dir}/handlers
-cp ${repo_dir}/ulogger/handlers/*.h ${nrf52_package_dir}/handlers
-cp ${repo_dir}/ulogger/handlers/*.c ${nrf52_package_dir}/handlers
-
 cp ${repo_dir}/platforms/nrf52/*.c ${nrf52_package_dir}
 cp ${repo_dir}/platforms/nrf52/*.h ${nrf52_package_dir}
 

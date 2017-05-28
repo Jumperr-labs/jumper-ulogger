@@ -8,7 +8,7 @@
 #define ULOGGER_NRF52
 
 #include "ulogger.h"
-#include "trace_nrf52.h
+#include "trace_nrf52.h"
 #include "ble.h"
 
 #define ULOGGER_RTC 2
