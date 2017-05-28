@@ -1,6 +1,7 @@
 #include "json_formatter.h"
 #include "json_encoding_helper.h"
 #include "logging_config.h"
+#include "netcfg.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -8,17 +9,22 @@
 #define PACK_EVENT_TYPE(buf, type) \
         (buf) += sprintf((buf), "\"event\": \"%s\", ", #type)
 
+
 int json_formatter_format(void * formatter_context, uLoggerEventHeader * event,
                           uint8_t ** formatted_event, size_t * formatted_event_length) {
 
     json_formatter_context * context = (json_formatter_context *) formatter_context;
     uint8_t * additional_data = ((uint8_t*)event) + sizeof(uLoggerEventHeader);
-    memset(context->buffer, 0, context->buffer_length);
-    char * buf = context->buffer;
+    _u8 mac_address[SL_MAC_ADDR_LEN];
+    _u8 macAddressLen = SL_MAC_ADDR_LEN;
+    sl_NetCfgGet(SL_MAC_ADDRESS_GET,(_u8 *)NULL,&macAddressLen, mac_address);
 
+    memset(context->buffer, 0, context->buffer_length);
+    uint8_t * buf = context->buffer;
     START_OBJECT(buf);
     START_ARRAY(buf, JUMPER_PROJECT_ID);
     START_OBJECT(buf);
+    PACK_NAME_AND_MAC_ADDRESS(buf, "device_id", mac_address);
     switch (event->event_type) {
         case DEVICE_STARTED_EVENT:
             PACK_EVENT_TYPE(buf, DEVICE_STARTED_EVENT);

@@ -15,6 +15,7 @@
 typedef struct {
     uint8_t * buffer;
     size_t buffer_length;
+    uint8_t mac_address[6];
 } json_formatter_context;
 
 /**

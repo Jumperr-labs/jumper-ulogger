@@ -34,6 +34,9 @@
 #define PACK_NAME_AND_STRING(buf, obj, param) \
         (buf) += sprintf((buf), "\"%s\": \"%s\", ", #param, (obj)->param)
 
+#define PACK_NAME_AND_MAC_ADDRESS(buf, field_name, mac) \
+        (buf) += sprintf((buf), "\"%s\": \"%x:%x:%x:%x:%x:%x\", ", field_name, mac[0], mac[1], mac[2], mac[3], mac[4], mac[5])
+
 #define PACK_EVENT_NAME(name) #name
 
 #endif //JSON_ENCODING_HELPER_H
