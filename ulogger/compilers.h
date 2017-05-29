@@ -20,6 +20,11 @@
 #ifndef __PACKED
 #define __PACKED __attribute__((packed))
 #endif
+
+#elif defined(__TI_COMPILER_VERSION__)
+#ifndef __PACKED
+#define __PACKED __attribute__((packed))
+#endif
 #endif
 
 #endif //JUMPER_ULOGGER_COMPILERS_H_H

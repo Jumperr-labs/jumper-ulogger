@@ -2,6 +2,7 @@
 #include <string.h>
 #include "unity.h"
 #include "unity_fixture.h"
+#include "mock_critical_section.h"
 #include <ubuffer.h>
 
 #define BUFFER_CAPACITY 15
@@ -65,6 +66,7 @@ TEST(TestUbuffer, Test_Init) {
     TEST_ASSERT_EQUAL(0, ubuffer.head);
     TEST_ASSERT_EQUAL(0, ubuffer.size);
     TEST_ASSERT_EQUAL(0, ubuffer.num_empty_bytes_at_end);
+    TEST_ASSERT_EQUAL(0, mock_critical_section_state());
 }
 
 TEST(TestUbuffer, Test_Allocate) {
@@ -73,6 +75,8 @@ TEST(TestUbuffer, Test_Allocate) {
     *item = 10;
     TEST_ASSERT_EQUAL(ubuffer.start, item);
     TEST_ASSERT_EQUAL(sizeof(int), ubuffer.size);
+    TEST_ASSERT_EQUAL(0, mock_critical_section_state());
+    TEST_ASSERT_EQUAL(1, mock_critical_section_calls());
 }
 
 TEST(TestUbuffer, Test_Free) {
@@ -84,6 +88,7 @@ TEST(TestUbuffer, Test_Free) {
     TEST_ASSERT_EQUAL(buffer_memory, ubuffer.start);
     TEST_ASSERT_EQUAL(0, ubuffer.head);
     TEST_ASSERT_EQUAL(0, ubuffer.size);
+    TEST_ASSERT_EQUAL(0, mock_critical_section_state());
 }
 
 TEST(TestUbuffer, Test_Full) {
@@ -130,6 +135,7 @@ TEST(TestUbuffer, Test_Circular_Tail) {
     //make sure we can add more after emptyinh
     TEST_ASSERT_EQUAL(UBUFFER_SUCCESS, ubuffer_allocate_next(&ubuffer, (void **) &item, sizeof(int)));
     TEST_ASSERT_EQUAL(UBUFFER_SUCCESS, ubuffer_peek_first(&ubuffer, (void **) &item, sizeof(int)));
+    TEST_ASSERT_EQUAL(0, mock_critical_section_state());
 }
 
 TEST(TestUbuffer, Test_Nrf_Scenario) {

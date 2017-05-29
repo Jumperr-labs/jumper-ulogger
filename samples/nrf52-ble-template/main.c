@@ -859,7 +859,7 @@ int main(void)
     ulogger_init_nrf52(&ulogger);
     // Start execution.
     NRF_LOG_INFO("Template example started.\r\n");
-    ulogger_log_string(&ulogger, ULOGGER_INFO, DEVICE_BOOT_EVENT, FW_VERSION);
+    ULOGGEER_LOG_STRING(&ulogger, ULOGGER_INFO, DEVICE_BOOT_EVENT, FW_VERSION);
     application_timers_start();
 
     advertising_start(erase_bonds);

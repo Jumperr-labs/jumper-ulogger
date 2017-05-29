@@ -40,3 +40,10 @@ venv/
 *.DS_Store
 
 docs/
+samples/cc3200-sample/ccs/Release
+samples/cc3200-sample/ccs/.settings
+
+
+samples/cc3200-sample/gcc/exe
+samples/cc3200-sample/ewarm/Release
+samples/cc3200-sample/ewarm/settings
