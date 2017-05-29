@@ -27,6 +27,7 @@
  */
 
 #include "ulogger_events.h"
+#include "logging_config.h"
 
 /**
  * @brief Return codes for various ulogger methods.
