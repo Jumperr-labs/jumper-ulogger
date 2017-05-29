@@ -15,7 +15,9 @@ uBufferErrorCode ubuffer_init(uBuffer *ubuffer, char *start, size_t buffer_capac
 uBufferErrorCode ubuffer_allocate_next(uBuffer *ubuffer, void **item, size_t item_size) {
     size_t item_location;
 
+    ULOGGER_ENTER_CRITICAL_SECTION();
     if (ubuffer->size + item_size > ubuffer->capacity) {
+        ULOGGER_EXIT_CRITICAL_SECTION();
         return UBUFFER_FULL;
     }
 
@@ -27,6 +29,7 @@ uBufferErrorCode ubuffer_allocate_next(uBuffer *ubuffer, void **item, size_t ite
         new_num_empty_bytes_at_end = ubuffer->capacity - (ubuffer->head + ubuffer->size);
         new_buffer_size = ubuffer->size + new_num_empty_bytes_at_end;
         if (new_buffer_size + item_size > ubuffer->capacity) {
+            ULOGGER_EXIT_CRITICAL_SECTION();
             return UBUFFER_FULL;
         }
         ubuffer->num_empty_bytes_at_end = new_num_empty_bytes_at_end;
@@ -36,14 +39,20 @@ uBufferErrorCode ubuffer_allocate_next(uBuffer *ubuffer, void **item, size_t ite
 
     ubuffer->size += item_size;
     *item = (void*) (ubuffer->start + item_location);
+    ULOGGER_EXIT_CRITICAL_SECTION();
     return UBUFFER_SUCCESS;
 }
 
 uBufferErrorCode ubuffer_free_first(uBuffer *ubuffer, void **item, size_t item_size) {
     uBufferErrorCode err_code;
 
+    ULOGGER_ENTER_CRITICAL_SECTION();
+
     err_code = ubuffer_peek_first(ubuffer, item, item_size);
-    if (err_code) return err_code;
+    if (err_code) {
+        ULOGGER_EXIT_CRITICAL_SECTION();
+        return err_code;
+    }
 
     ubuffer->head += item_size;
     ubuffer->size -= item_size;
@@ -59,6 +68,7 @@ uBufferErrorCode ubuffer_free_first(uBuffer *ubuffer, void **item, size_t item_s
         ubuffer->num_empty_bytes_at_end = 0;
     }
 
+    ULOGGER_EXIT_CRITICAL_SECTION();
     return UBUFFER_SUCCESS;
 }
 
