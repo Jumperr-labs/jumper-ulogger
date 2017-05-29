@@ -42,8 +42,12 @@ typedef uint8_t EventType;
 /**
  * Macro to conveniently define events with no additional data.
  */
-#define ULOGGER_LOG(logger, level, event) ulogger_log(logger, level, event, 0, 0);
+#define ULOGGER_LOG(logger, level, event) ulogger_log(logger, level, event, 0, 0)
 
+/**
+ * Send an event to the logging handlers where the event data is a null terminated string
+ */
+#define ULOGGEER_LOG_STRING(logger, level, event_type, log_string) ulogger_log(logger, level, event_type, log_string, strlen(log_string) + 1)
 /**
  * @brief Logging levels for events.
  */
@@ -96,17 +100,6 @@ uLoggerErrorCode ulogger_init(uLogger *ulogger, handler_func *handlers, void **h
  * @return HANDLER_SUCCESS when successful, error code otherwise.
  */
 uLoggerErrorCode ulogger_log(uLogger *ulogger, LogLevel level, EventType event_type, void * log_data, size_t data_length);
-
-/**
- * @brief Send an event to the logging handlers where the event data is a null terminated string
- * @param ulogger
- * @param level
- * @param event_type
- * @param log_string
- * @return HANDLER_SUCCESS when successful, error code otherwise.
- */
-uLoggerErrorCode ulogger_log_string(uLogger *ulogger, LogLevel level, EventType event_type, char *log_string);
-
 
 #endif // ULOGGER
 
