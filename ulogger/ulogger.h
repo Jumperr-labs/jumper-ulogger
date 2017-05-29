@@ -11,6 +11,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#define PLATFORM_NRF52 0
+#define PLATFORM_CC3200 1
+
 /**
  * @mainpage Jumper Ulogger
  * @section Introduction
