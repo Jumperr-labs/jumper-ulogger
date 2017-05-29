@@ -57,9 +57,9 @@ extern "C"
 // Values for below macros shall be modified as per access-point(AP) properties
 // SimpleLink device will connect to following AP when application is executed
 //
-#define SSID_NAME           "jumper"    /* AP SSID */
+#define SSID_NAME           "YOUR_SSID"    /* AP SSID */
 #define SECURITY_TYPE       SL_SEC_TYPE_WPA_WPA2/* Security type (OPEN or WEP or WPA*/
-#define SECURITY_KEY        "pita1982pita2"              /* Password of the secured AP */
+#define SECURITY_KEY        "YOUR_KEY"              /* Password of the secured AP */
 #define SSID_LEN_MAX        32
 #define BSSID_LEN_MAX       6
 
