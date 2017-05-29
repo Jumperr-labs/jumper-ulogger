@@ -10,7 +10,7 @@ This sample project is the best way to get you started with Jumper Insights for 
 ### First time setup
 - Create an account on https://app-events.jumper.io/
 - Install Jumper's BLE Logger on your gateway:
-`sudo -H pip install https://github.com/Jumperr-labs/jumper-ble-logger/archive/0.0.17.tar.gz`
+`sudo -H pip install https://github.com/Jumperr-labs/jumper-ble-logger/archive/0.0.18.tar.gz`
 - Set the following variable `export NRF52_SDK=PATH/TO/NRF5_SDK_13.0.0`
 - Compile this project: `make`
 - Flash the binary to the nRF52 board: `make flash`
