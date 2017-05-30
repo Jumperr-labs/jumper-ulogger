@@ -9,6 +9,7 @@
 #define ULOGGER_BATTERY_EVENT   3
 #define BLE_STATE_EVENT         4
 #define WLAN_EVENT              5
+#define CC3XXX_PING_REPORT      6
 
 typedef struct {
     uint8_t is_on;
