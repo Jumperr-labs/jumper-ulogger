@@ -1,34 +1,34 @@
 {
   "0": {
-    "type": "DEVICE_BOOT",
-    "strings": ["version"]
+    "type": "boot",
+    "strings": ["fw_version"]
   },
   "1": {
-    "type":"RADIO_STATE",
+    "type":"radio_state",
     "data": {
       "is_on": "B"
     }
   },
   "2": {
-    "type":"ADVERTISING_STATE",
+    "type":"advertising_state",
     "data": {
       "is_on": "B"
     }
   },
   "3": {
-    "type": "BATTERY_LEVEL",
+    "type": "battery",
     "data": {
-      "level": "B"
+      "battery": "B"
     }
   },
   "4": {
-    "type": "BLE_STATE",
+    "type": "ble_state",
     "data": {
       "is_connected": "B"
     }
   },
   "5": {
-    "type": "CUSTOM_STRING",
+    "type": "custom_string",
     "strings": ["custom_string"]
   }
 }
