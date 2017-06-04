@@ -38,7 +38,7 @@ This sample project is the best way to get you started with Jumper Insights for 
 `sudo service jumper-agent start`
 - Start the BLE Logger: `sudo service jumper-ble start`
 - Run `hciconfig` again to see the newly created HCI device `hci1`. We'll assume hci1 is the newly created HCI device.
-- Make sure when run `hciconfig` that both hci0 and hci1 are UP and RUNNING. If not run - `sudo hciconfig hciX up`.ning
+- Make sure when running `hciconfig` that both hci0 and hci1 are UP and RUNNING. If not run - `sudo hciconfig hciX up`.ning
 - Start gatttool. We will use gatttool to act as a gateway program running on your Linux device. `sudo gatttool -b <BLE_peripheral_mac_address> -t random -i hci1 -I`
    - Scan for the BLE peripheral MAC address - `sudo hcitool -i hci1 lesacn`. The device with JumperSampleApp name is our BLE peripheral.
 - Inside gatttool, connect to the BLE peripheral `connect` and discover characteristics by running `characteristics`.
