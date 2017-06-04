@@ -3,8 +3,12 @@ This sample project is the best way to get you started with Jumper Insights for 
 
 ## Prerequisites
 - A Linux gateway
+   - Make sure gatttool is installed. (In Ubuntu you can run - sudo apt-get install bluez)
 - nRF52 based BLE peripheral
-- [nRF5 SDK v13.0.0](https://www.nordicsemi.com/eng/Products/Bluetooth-low-energy/nRF5-SDK)
+- Compling computer with:
+  - [nRF5 SDK v13.0.0](https://www.nordicsemi.com/eng/Products/Bluetooth-low-energy/nRF5-SDK)
+  - [nrfjproj](http://www.nordicsemi.com/eng/Products/Bluetooth-low-energy/nRF52832)
+  - [jlinkARM](https://www.segger.com/downloads/jlink)l;ksjdaf;laksjdf;laskjdfl;askjdf;lasdkjf
 
 ## Getting Started
 ### First time setup
