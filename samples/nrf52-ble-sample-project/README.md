@@ -45,7 +45,7 @@ This sample project is the best way to get you started with Jumper Insights for 
 - Run `hciconfig` again to see the newly created HCI device `hci1`. We'll assume hci1 is the newly created HCI device.
 - Make sure when running `hciconfig` that both hci0 and hci1 are UP and RUNNING. If not run - `sudo hciconfig hciX up`.ning
 - Start gatttool. We will use gatttool to act as a gateway program running on your Linux device. `sudo gatttool -b <BLE_peripheral_mac_address> -t random -i hci1 -I`
-   - Scan for the BLE peripheral MAC address - `sudo hcitool -i hci1 lesacn`. The device with JumperSampleApp name is our BLE peripheral.
+   - Scan for the BLE peripheral MAC address - `sudo hcitool -i hci1 lescan`. The device with JumperSampleApp name is our BLE peripheral.
 - Inside gatttool, connect to the BLE peripheral `connect` and discover characteristics by running `characteristics`.
 - At this stage the logging data will pass through to your Insights project dashboard on https://app-events.jumper.io/ .
 - You will notice that your gateway process (in this case gatttool) will not be notified on logging events and will work the same as it would if the BLE Logger wasn't running.
