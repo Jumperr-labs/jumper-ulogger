@@ -8,13 +8,16 @@
 #define ULOGGER_NRF52
 
 #include "ulogger.h"
+#include "trace_nrf52.h"
 #include "ble.h"
 
 #define ULOGGER_RTC 2
 
+uLogger ulogger;
+
 /**
  * @brief Initializes the supplied uLogger structure
- * @param ulogger An allocated memory in the size of SIZEOF_ULOGGER
+ * @param ulogger A uLogger handle
  */
 void ulogger_init_nrf52(uLogger* logger);
 

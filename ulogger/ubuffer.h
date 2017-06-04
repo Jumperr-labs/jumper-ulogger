@@ -20,11 +20,6 @@ typedef struct {
 } uBuffer;
 
 /**
- * The size of the memory that should be allocated for the uBuffer struct and passed to ubuffer_init().
- */
-#define SIZEOF_UBUFFER sizeof(uBuffer)
-
-/**
  * @brief Return codes for various uBuffer methods
  */
 typedef enum {
@@ -41,7 +36,7 @@ typedef enum {
  * @param buffer_capacity The length of the previous array.
  * @returns UBUFFER_SUCCESS if successful, otherwise an error code is returned.
  */
-uBufferErrorCode ubuffer_init(void *ubuffer, char *start, size_t buffer_capacity);
+uBufferErrorCode ubuffer_init(uBuffer *ubuffer, char *start, size_t buffer_capacity);
 
 /**
  * @brief Allocates memory at the end of the buffer
@@ -50,7 +45,7 @@ uBufferErrorCode ubuffer_init(void *ubuffer, char *start, size_t buffer_capacity
  * @param item_size The size of the memory to allocate
  * @return UBUFFER_SUCCESS if successful, otherwise an error code is returned.
  */
-uBufferErrorCode ubuffer_allocate_next(void *ubuffer, void **item, size_t item_size);
+uBufferErrorCode ubuffer_allocate_next(uBuffer *ubuffer, void **item, size_t item_size);
 
 /**
  * @brief Free item_size amount of memory from the beginning of the buffer
@@ -59,7 +54,7 @@ uBufferErrorCode ubuffer_allocate_next(void *ubuffer, void **item, size_t item_s
  * @param item_size The size of the memory to release
  * @return UBUFFER_SUCCESS if successful, otherwise an error code is returned.
  */
-uBufferErrorCode ubuffer_free_first(void *ubuffer, void **item, size_t item_size);
+uBufferErrorCode ubuffer_free_first(uBuffer *ubuffer, void **item, size_t item_size);
 
 /**
  * @brief Peeks at the first item in the buffer
@@ -68,7 +63,7 @@ uBufferErrorCode ubuffer_free_first(void *ubuffer, void **item, size_t item_size
  * @param item_size The length of the item to be peeked
  * @return UBUFFER_SUCCESS if successful, otherwise an error code is returned.
  */
-uBufferErrorCode ubuffer_peek_first(void *ubuffer, void **item, size_t item_size);
+uBufferErrorCode ubuffer_peek_first(uBuffer *ubuffer, void **item, size_t item_size);
 
 #endif //UBUFFER
 

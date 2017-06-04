@@ -69,7 +69,7 @@ SRC_FILES += \
   $(PLATFORM_DIR)/ulogger_nrf52.c \
   $(ULOGGER_DIR)/ulogger.c \
   $(ULOGGER_DIR)/ubuffer.c \
-  $(ULOGGER_DIR)/handlers/network_log_handler.c
+  $(ULOGGER_DIR)/network_log_handler.c
 
 # Include folders common to all targets
 INC_FOLDERS += \
@@ -180,7 +180,6 @@ INC_FOLDERS += \
   $(ULOGGER_DIR) \
   $(PLATFORM_DIR) \
   $(PROJ_DIR) \
-  $(ULOGGER_DIR)/handlers
 
 
 # Libraries common to all targets

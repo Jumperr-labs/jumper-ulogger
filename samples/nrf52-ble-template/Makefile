@@ -2,7 +2,7 @@ PROJECT_NAME     := ble_app_template_pca10040_s132
 TARGETS          := nrf52832_xxaa
 OUTPUT_DIRECTORY := _build
 
-SDK_ROOT := ../../external/nrf5-sdk
+SDK_ROOT := $(NRF52_SDK)
 PROJ_DIR := .
 ULOGGER_DIR := ../../ulogger
 PLATFORM_DIR := ../../platforms/nrf52
@@ -66,7 +66,7 @@ SRC_FILES += \
   $(PLATFORM_DIR)/ulogger_nrf52.c \
   $(ULOGGER_DIR)/ulogger.c \
   $(ULOGGER_DIR)/ubuffer.c \
-  $(ULOGGER_DIR)/handlers/network_log_handler.c
+  $(ULOGGER_DIR)/network_log_handler.c
 
 # Include folders common to all targets
 INC_FOLDERS += \
@@ -177,7 +177,6 @@ INC_FOLDERS += \
   $(ULOGGER_DIR) \
   $(PLATFORM_DIR) \
   $(PROJ_DIR) \
-  $(ULOGGER_DIR)/handlers
 
 
 # Libraries common to all targets

@@ -1,7 +1,7 @@
 {
   "0": {
-    "type": "DEVICE_BOOT",
-    "strings": ["version"]
+    "type": "DEVICE_STARTED",
+    "data": {}
   },
   "1": {
     "type":"RADIO_STATE",
@@ -26,9 +26,5 @@
     "data": {
       "is_connected": "B"
     }
-  },
-  "5": {
-    "type": "CUSTOM_STRING",
-    "strings": ["custom_string"]
   }
 }

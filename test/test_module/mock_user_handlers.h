@@ -16,6 +16,8 @@ void assert_counters(uint32_t expected_value);
 
 void* handler_data[NUM_HANDLERS];
 
+char retrieved_string[4096];
+
 handler_func log_handlers[NUM_HANDLERS];
 
 #endif //JUMPER_ULOGGER_MOCK_USER_HANDLERS_H

@@ -75,9 +75,7 @@
 #include "nrf_gpio.h"
 #include "ble_conn_state.h"
 #include "nrf_ble_gatt.h"
-#include "ulogger.h"
 #include "ulogger_nrf52.h"
-#include "trace_nrf52.h"
 
 #define NRF_LOG_MODULE_NAME "APP"
 #include "nrf_log.h"
@@ -113,6 +111,9 @@
 static uint16_t       m_conn_handle = BLE_CONN_HANDLE_INVALID;                  /**< Handle of the current connection. */
 static nrf_ble_gatt_t m_gatt;                                                   /**< GATT module instance. */
 
+
+#define FW_VERSION                      "1.2.3"
+
 APP_TIMER_DEF(log_generating_timer);
 
 /* YOUR_JOB: Declare all services structure your application is using
@@ -140,8 +141,6 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
 {
     app_error_handler(DEAD_BEEF, line_num, p_file_name);
 }
-
-uLogger ulogger;
 
 /**@brief Function for handling Peer Manager events.
  *
@@ -247,7 +246,10 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
 static void log_generating_function(void * p_context)
 {
     UNUSED_PARAMETER(p_context);
-    ULOGGER_LOG(&ulogger, ULOGGER_INFO, START_RADIO);
+    static battery_state_event_data_t battery_level = {100};
+    battery_level.level = battery_level.level - 1;
+    if (battery_level.level == 0) battery_level.level = 100;
+    ulogger_log(&ulogger, ULOGGER_INFO, ULOGGER_BATTERY_EVENT, &battery_level, 1);
 }
 
 /**@brief Function for the Timer initialization.
@@ -857,6 +859,7 @@ int main(void)
     ulogger_init_nrf52(&ulogger);
     // Start execution.
     NRF_LOG_INFO("Template example started.\r\n");
+    ULOGGEER_LOG_STRING(&ulogger, ULOGGER_INFO, DEVICE_BOOT_EVENT, FW_VERSION);
     application_timers_start();
 
     advertising_start(erase_bonds);
