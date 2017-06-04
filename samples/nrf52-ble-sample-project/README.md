@@ -29,8 +29,10 @@ This sample project is the best way to get you started with Jumper Insights for 
 #### Insights dashboard setup
 - Create an account on https://app-events.jumper.io/
 - Create a new project
-- Under Manage Projects, find your new project and click it's settings button
-- Copy the token and project ID accroding to the instructions 
+#### Connect Insight project with your gateway
+- In Insights dashboard, under Manage Projects, find your new project and click it's settings button
+- Copy the token and project ID accroding to the instructions to your gateway - `/etc/jumper_logging_agent/config.json`
+- Note that the file should only have one `project_id` and `write_key`
 
 ### See it in Action
 #### BLE peripheral
