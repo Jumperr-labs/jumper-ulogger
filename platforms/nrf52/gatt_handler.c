@@ -16,13 +16,6 @@
 #include "nrf_log.h"
 #include "network_log_handler.h"
 
-/**
-* Compatability with old SDK
-**/
-#ifndef NRF_LOG_INFO
-#define NRF_LOG_INFO NRF_LOG_PRINTF
-#endif
-
 APP_TIMER_DEF(send_log_timer);
 
 static const ble_uuid128_t jumper_log_uuid = {
@@ -263,12 +256,8 @@ static int send_to_gatt(void * network_context, uint8_t * data, uint32_t length)
         };
     err_code = sd_ble_gatts_hvx(handler->connection_handle, &hvx_params);
 
-    if (err_code == BLE_ERROR_GATTS_SYS_ATTR_MISSING) {
-        err_code = sd_ble_gatts_sys_attr_set(handler->connection_handle, NULL, 0, BLE_GATTS_SYS_ATTR_FLAG_USR_SRVCS);
-        APP_ERROR_CHECK(err_code);
-        return 1;
-     } else if (err_code != NRF_SUCCESS) {
-        NRF_LOG_INFO("Failed to send log %d\n", err_code);
+    if (err_code != NRF_SUCCESS) {
+        NRF_LOG_INFO("Failed to send log\n");
         return 1;
     }
     return 0;
@@ -289,7 +278,7 @@ static int gatt_handler_logging_timer_start(network_log_config * config, uint32_
     }
 
     ret_code_t ret_code; 
-    ret_code = app_timer_start(send_log_timer, APP_TIMER_TICKS(time_in_ms, 0)  , (void *)config);
+    ret_code = app_timer_start(send_log_timer, APP_TIMER_TICKS(time_in_ms)  , (void *)config);
     if (ret_code) {
         NRF_LOG_INFO("Failed to create timer\n");
         return ret_code;

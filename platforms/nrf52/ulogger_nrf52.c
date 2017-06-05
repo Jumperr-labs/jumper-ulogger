@@ -11,19 +11,7 @@
 #include "gatt_handler.h"
 #include "trace_nrf52.h"
 #include "network_log_handler.h"
-#include "app_timer.h"
 
-
-APP_TIMER_DEF(track_seconds_timer);
-
-/**
-* Compatability with old SDK
-**/
-#ifndef NRF_LOG_INFO
-#define NRF_LOG_INFO NRF_LOG_PRINTF
-#endif
-
-static timestamp msecs = 0;
 static const nrf_drv_rtc_t rtc_log = NRF_DRV_RTC_INSTANCE(ULOGGER_RTC);
 
 HandlerReturnType log_handler(void *handler_data, LogLevel level, EventType event_type, timestamp time, void * data, size_t data_length);
@@ -49,41 +37,41 @@ HandlerReturnType log_handler(void *handler_data, LogLevel level, EventType even
     return HANDLER_SUCCESS;
 }
 
-static void seconds_timeout(void * p_context) {
-    msecs++;
+static void rtc_handler(nrf_drv_rtc_int_type_t int_type) 
+{
 }
 
 
 /** @brief Function initialization and configuration of RTC driver instance.
  */
-static int timer_config(void)
+static void rtc_config(void)
 {
-       uint32_t err_code;
+    uint32_t err_code;
 
-    err_code = app_timer_create(&track_seconds_timer, APP_TIMER_MODE_REPEATED, seconds_timeout);
-    if (err_code != NRF_SUCCESS) {
-        NRF_LOG_INFO("Failed to create timer\n");
-        return err_code;
-    }
+    //Initialize RTC instance
+    nrf_drv_rtc_config_t config = NRF_DRV_RTC_DEFAULT_CONFIG;
+    config.prescaler = 2048;
+    err_code = nrf_drv_rtc_init(&rtc_log, &config, rtc_handler);
+    APP_ERROR_CHECK(err_code);
 
-    ret_code_t ret_code; 
-    ret_code = app_timer_start(track_seconds_timer, APP_TIMER_TICKS(1000, 0)  , (void *)NULL);
-    if (ret_code) {
-        NRF_LOG_INFO("Failed to create timer\n");
-        return ret_code;
-    }
+    //Enable tick event & interrupt
+    nrf_drv_rtc_tick_enable(&rtc_log, false);
 
-    return NRF_SUCCESS;
+    //Set compare channel to trigger interrupt after COMPARE_COUNTERTIME seconds
+    APP_ERROR_CHECK(err_code);
+
+    //Power on RTC instance
+    nrf_drv_rtc_enable(&rtc_log);
 }
 
 void get_timestamp(timestamp* time)
 {
-    *time = msecs;
+    *time = (timestamp) nrf_drv_rtc_counter_get(&rtc_log) / 16;
 }
 
 void ulogger_init_nrf52(uLogger* logger) {
     uint32_t err_code;
-    timer_config();
+    rtc_config();
 
     config.context = (void*) &handler;
     config.callback = &netowork_logger_periodic_callback;

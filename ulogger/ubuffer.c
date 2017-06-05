@@ -1,6 +1,5 @@
 #include <string.h>
 #include "ubuffer.h"
-#include "logging_config.h"
 
 #define START_OF_EMPTY_BYTES(buffer) (buffer->capacity - buffer->num_empty_bytes_at_end)
 
