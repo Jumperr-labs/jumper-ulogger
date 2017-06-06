@@ -41,5 +41,5 @@
 
 #endif //JSON_ENCODING_HELPER_H
 /**
-/* @}
+ * @}
  */

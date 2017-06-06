@@ -8,8 +8,6 @@
 #define ULOGGER_CC3200
 
 #include "logging_config.h"
-
-#if ULOGGER_PLATFORM == PLATFORM_CC3200
 #include "ulogger.h"
 
 /**
@@ -17,8 +15,6 @@
  * @param logger A uLogger instance
  */
 void ulogger_init_cc3200(uLogger * logger);
-
-#endif
 
 #endif //ULOGGER_CC3200
 /**
