@@ -17,7 +17,7 @@ This sample project is the best way to get you started with Jumper Insights for 
 ### First time setup
 #### Gateway setup
 - Install Jumper's BLE Logger on your gateway:
-`sudo -H pip install https://github.com/Jumperr-labs/jumper-ble-logger/archive/0.0.20.tar.gz`
+`sudo -H pip install https://github.com/Jumperr-labs/jumper-ble-logger/archive/0.0.21.tar.gz`
 - Create the following blank file on your gateway - `/etc/jumper_logging_agent/config.json`
 #### BLE peripheral setup
 - Set the following variable `export NRF52_SDK=PATH/TO/NRF5_SDK_13.0.0` on the compiling computer
