@@ -5,7 +5,7 @@
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_PROGRAM.Stellaris In-Circuit Debug Interface/Cortex_M4_0" value="${build_artifact:wlan_station}"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_PROJECT.Stellaris In-Circuit Debug Interface/Cortex_M4_0" value="wlan_station"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_TARGET_CONFIG" value="${target_config_active_default:wlan_station}"/>
-<stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM.Stellaris In-Circuit Debug Interface/Cortex_M4_0" value="/media/psf/Home/jumper/CC3200SDK_1.3.0/cc3200-sdk/example/getting_started_with_wlan_station/ccs/Release/wlan_station.out"/>
+<stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM.Stellaris In-Circuit Debug Interface/Cortex_M4_0" value="/media/psf/Home/jumper/jumper-ulogger/samples/cc3200-sample/ccs/Release/wlan_station.out"/>
 <mapAttribute key="com.ti.ccstudio.debug.ui.displayFormats">
 <mapEntry key="Stellaris In-Circuit Debug Interface/Cortex_M4_0@##separator##@0" value="Character"/>
 </mapAttribute>

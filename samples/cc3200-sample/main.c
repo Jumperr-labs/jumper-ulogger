@@ -245,12 +245,17 @@ void vApplicationStackOverflowHook( OsiTaskHandle *pxTask,
 //*****************************************************************************
 void SimpleLinkWlanEventHandler(SlWlanEvent_t *pWlanEvent)
 {
+    wlan_event_t event_metadata = {0};
     switch(pWlanEvent->Event)
     {
         case SL_WLAN_CONNECT_EVENT:
         {
             SET_STATUS_BIT(g_ulStatus, STATUS_BIT_CONNECTION);
             
+            memcpy(event_metadata.bssid, pWlanEvent->EventData.STAandP2PModeWlanConnected.ssid_name,
+                pWlanEvent->EventData.STAandP2PModeWlanConnected.ssid_len);
+            event_metadata.is_connected = 1;
+            ulogger_log(&logger, ULOGGER_INFO, WLAN_EVENT, (void*)&event_metadata, sizeof(event_metadata));
             //
             // Information about the connected AP (like name, MAC etc) will be
             // available in 'slWlanConnectAsyncResponse_t'-Applications
@@ -285,6 +290,10 @@ void SimpleLinkWlanEventHandler(SlWlanEvent_t *pWlanEvent)
             CLR_STATUS_BIT(g_ulStatus, STATUS_BIT_IP_AQUIRED);
 
             pEventData = &pWlanEvent->EventData.STAandP2PModeDisconnected;
+
+            memcpy(event_metadata.bssid, pEventData->ssid_name, pEventData->ssid_len);
+            event_metadata.is_connected = 0;
+            ulogger_log(&logger, ULOGGER_INFO, WLAN_EVENT, (void*)&event_metadata, sizeof(event_metadata));
 
             // If the user has initiated 'Disconnect' request, 
             //'reason_code' is SL_WLAN_DISCONNECT_USER_INITIATED_DISCONNECTION 

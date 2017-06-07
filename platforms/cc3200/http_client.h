@@ -22,8 +22,11 @@ typedef enum {
 
 typedef struct {
      HTTPCli_Struct http_client;
+     uint32_t destination_ip;
 } jumper_http_client_context_t;
 
+
+void http_client_init(jumper_http_client_context_t * context);
 http_client_result_t http_client_send_event(jumper_http_client_context_t * context, char * data, uint32_t data_length);
 
 #endif

@@ -30,27 +30,34 @@ http_client_result_t http_client_send_event(jumper_http_client_context_t * conte
     return HTTP_CLIENT_OK;
 }
 
+void http_client_init(jumper_http_client_context_t * context) {
+    HTTPCli_construct(&context->http_client);
+    context->destination_ip = 0;
+}
+
 static http_client_result_t connect_to_http_server(jumper_http_client_context_t * context) {
     int32_t ret_val = 0;
     struct sockaddr_in addr;
-    uint32_t destination_ip;
     /* Resolve HOST NAME/IP */
-    ret_val = sl_NetAppDnsGetHostByName(JUMPER_HTTP_HOST_NAME,
-                                          strlen(JUMPER_HTTP_HOST_NAME),
-                                          &destination_ip,SL_AF_INET);
-    if(ret_val < 0)
-    {
-        Report("DNS Failed with status %d\n", ret_val);
-        return HTTP_CLIENT_DNS_FAILED;
+    if (context->destination_ip == 0) {
+        ret_val = sl_NetAppDnsGetHostByName(JUMPER_HTTP_HOST_NAME,
+                                              strlen(JUMPER_HTTP_HOST_NAME),
+                                              &context->destination_ip,SL_AF_INET);
+        if(ret_val < 0)
+        {
+            Report("DNS Failed with status %d\n", ret_val);
+            return HTTP_CLIENT_DNS_FAILED;
+        }
     }
+
 
     /* Set up the input parameters for HTTP Connection */
     addr.sin_family = AF_INET;
     addr.sin_port = htons(JUMPER_HTTP_HOST_PORT);
-    addr.sin_addr.s_addr = sl_Htonl(destination_ip);
+    addr.sin_addr.s_addr = sl_Htonl(context->destination_ip);
 
     /* Testing HTTPCli open call: handle, address params only */
-    HTTPCli_construct(&context->http_client);
+
     ret_val = HTTPCli_connect(&context->http_client, (struct sockaddr *)&addr, HTTPCli_TYPE_TLS, NULL);
     if (ret_val < 0)
     {
@@ -108,6 +115,8 @@ static http_client_result_t http_send_post(jumper_http_client_context_t * contex
 
 
     lRetVal = read_response(context);
+
+    HTTPCli_disconnect(&context->http_client);
 
     return HTTP_CLIENT_OK;
 }

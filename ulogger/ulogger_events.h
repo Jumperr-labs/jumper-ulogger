@@ -11,6 +11,10 @@
 #define WLAN_EVENT              5
 
 typedef struct {
+    char version[1];
+} boot_event_t;
+
+typedef struct {
     uint8_t is_on;
 } __PACKED radio_state_event_data_t;
 
