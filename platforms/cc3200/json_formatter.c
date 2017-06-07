@@ -7,7 +7,7 @@
 
 
 #define PACK_EVENT_TYPE(buf, type) \
-        (buf) += sprintf((buf), "\"event\": \"%s\", ", #type)
+        (buf) += sprintf((buf), "\"type\": \"%s\", ", #type)
 
 
 int json_formatter_format(void * formatter_context, uLoggerEventHeader * event,
@@ -21,8 +21,7 @@ int json_formatter_format(void * formatter_context, uLoggerEventHeader * event,
 
     memset(context->buffer, 0, context->buffer_length);
     uint8_t * buf = context->buffer;
-    START_OBJECT(buf);
-    START_ARRAY(buf, JUMPER_PROJECT_ID);
+    START_ARRAY(buf);
     START_OBJECT(buf);
     PACK_NAME_AND_MAC_ADDRESS(buf, "device_id", mac_address);
     switch (event->event_type) {
@@ -44,7 +43,6 @@ int json_formatter_format(void * formatter_context, uLoggerEventHeader * event,
     }
     END_OBJECT(buf)
     END_ARRAY(buf);
-    END_OBJECT(buf)
     *formatted_event =  context->buffer;
     *formatted_event_length = buf - context->buffer;
     return 0;

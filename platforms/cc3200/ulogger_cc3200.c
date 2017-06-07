@@ -68,6 +68,8 @@ void get_timestamp(timestamp* time)
 
 void ulogger_init_cc3200(uLogger * logger) {
     timer_init();
-    events_api_handler_init(&events_api_handler_config, &events_api_buffer, API_HANDLER_BUFFER_SIZE, &json_context, &json_encoding_buffer, API_HANDLE_JSON_ENCODER_BUFFER_SIZE);
+    if (events_api_handler_init(&events_api_handler_config, &events_api_buffer, API_HANDLER_BUFFER_SIZE, &json_context, &json_encoding_buffer, API_HANDLE_JSON_ENCODER_BUFFER_SIZE)) {
+        Report("Failed to create events api handler\n");
+    }
     ulogger_init(logger, log_handlers, handler_data, (size_t) 2);
 }

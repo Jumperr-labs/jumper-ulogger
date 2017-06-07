@@ -40,8 +40,8 @@ static bool events_api_handler_can_send(void * network_context) {
 
 static int events_api_handler_send(void * network_context, uint8_t * data, uint32_t length) {
 
-    network_log_config * config = (network_log_config *) network_context;
-    http_client_result_t error_code = http_client_send_event(config->context, data, length);
+    jumper_http_client_context_t * config = (jumper_http_client_context_t *) network_context;
+    http_client_result_t error_code = http_client_send_event(config, data, length);
 
 //http_client_result_t http_client_send_event(jumper_http_client_context_t * context, char * data, uint32_t data_length);
     UART_PRINT("Sending data....... %d\n", error_code);

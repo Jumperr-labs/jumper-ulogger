@@ -3,7 +3,7 @@
 static struct HTTPCli_SecureParams sparams = {
     .method = SL_SO_SEC_METHOD_SSLv3_TLSV1_2,
     .mask = SL_SEC_MASK_TLS_DHE_RSA_WITH_AES_256_CBC_SHA,
-    .cafile = "/cert/root_ca.cer",
+    .cafile = "/cert/our_ca.cer",
     .privkey = {0}, 
     .cert = {0}, 
     .dhkey = {0}
@@ -17,7 +17,6 @@ static int flush_response(jumper_http_client_context_t * context);
 http_client_result_t http_client_send_event(jumper_http_client_context_t * context, char * data, uint32_t data_length) {
     http_client_result_t result;
     HTTPCli_setSecureParams(&sparams); 
-    context->host_name = JUMPER_HTTP_HOST_NAME;
     result = connect_to_http_server(context);
     if (result != HTTP_CLIENT_OK) {
         return result;
@@ -32,15 +31,16 @@ http_client_result_t http_client_send_event(jumper_http_client_context_t * conte
 }
 
 static http_client_result_t connect_to_http_server(jumper_http_client_context_t * context) {
-    long lRetVal = -1;
+    int32_t ret_val = 0;
     struct sockaddr_in addr;
     uint32_t destination_ip;
     /* Resolve HOST NAME/IP */
-    lRetVal = sl_NetAppDnsGetHostByName((signed char *)context->host_name,
-                                          strlen((const char *)context->host_name),
+    ret_val = sl_NetAppDnsGetHostByName(JUMPER_HTTP_HOST_NAME,
+                                          strlen(JUMPER_HTTP_HOST_NAME),
                                           &destination_ip,SL_AF_INET);
-    if(lRetVal < 0)
+    if(ret_val < 0)
     {
+        Report("DNS Failed with status %d\n", ret_val);
         return HTTP_CLIENT_DNS_FAILED;
     }
 
@@ -50,11 +50,11 @@ static http_client_result_t connect_to_http_server(jumper_http_client_context_t 
     addr.sin_addr.s_addr = sl_Htonl(destination_ip);
 
     /* Testing HTTPCli open call: handle, address params only */
-    HTTPCli_construct(context->http_client);
-    lRetVal = HTTPCli_connect(context->http_client, (struct sockaddr *)&addr, HTTPCli_TYPE_TLS, NULL);
-    if (lRetVal < 0)
+    HTTPCli_construct(&context->http_client);
+    ret_val = HTTPCli_connect(&context->http_client, (struct sockaddr *)&addr, HTTPCli_TYPE_TLS, NULL);
+    if (ret_val < 0)
     {
-        Report("Connection to server failed. error(%d)\n\r", lRetVal);
+        Report("Connection to server failed. error(%d)\n\r", ret_val);
         return HTTP_CLIENT_CONNECTION_FAILED;
     }    
     else
@@ -72,17 +72,17 @@ static http_client_result_t http_send_post(jumper_http_client_context_t * contex
     char tmpBuf[4];
     long lRetVal = 0;
     HTTPCli_Field fields[] = {
-                                {HTTPCli_FIELD_NAME_HOST, context->host_name},
+                                {HTTPCli_FIELD_NAME_HOST, JUMPER_HTTP_HOST_NAME},
                                 {HTTPCli_FIELD_NAME_ACCEPT, "*/*"},
                                 {HTTPCli_FIELD_NAME_CONTENT_TYPE, "application/json"},
                                 {HTTPCli_FIELD_NAME_AUTHORIZATION, JUMPER_WRITE_KEY},
                                 {NULL, NULL}
                             };
 
-    HTTPCli_setRequestFields(context->http_client, fields);
+    HTTPCli_setRequestFields(&context->http_client, fields);
 
     moreFlags = 1;
-    lRetVal = HTTPCli_sendRequest(context->http_client, HTTPCli_METHOD_POST, request_uri, moreFlags);
+    lRetVal = HTTPCli_sendRequest(&context->http_client, HTTPCli_METHOD_POST, request_uri, moreFlags);
     if(lRetVal < 0)
     {
         Report("Failed to send HTTP POST request header %d.\n\r", lRetVal);
@@ -92,14 +92,14 @@ static http_client_result_t http_send_post(jumper_http_client_context_t * contex
     sprintf((char *)tmpBuf, "%d", data_length);
 
     lastFlag = 1;
-    lRetVal = HTTPCli_sendField(context->http_client, HTTPCli_FIELD_NAME_CONTENT_LENGTH, (const char *)tmpBuf, lastFlag);
+    lRetVal = HTTPCli_sendField(&context->http_client, HTTPCli_FIELD_NAME_CONTENT_LENGTH, (const char *)tmpBuf, lastFlag);
     if(lRetVal < 0)
     {
         Report("Failed to send HTTP POST request header %d.\n\r", lRetVal);
         return HTTP_CLIENT_SEND_REQUEST_FAILED;
     }
 
-    lRetVal = HTTPCli_sendRequestBody(context->http_client, request_data, data_length);
+    lRetVal = HTTPCli_sendRequestBody(&context->http_client, request_data, data_length);
     if(lRetVal < 0)
     {
         Report("Failed to send HTTP POST request body %d.\n\r", lRetVal);
@@ -119,9 +119,8 @@ static http_client_result_t read_response(jumper_http_client_context_t * context
 	bool moreFlags = 1;
 
 	/* Read HTTP POST request status code */
-	lRetVal = HTTPCli_getResponseStatus(context->http_client);
+	lRetVal = HTTPCli_getResponseStatus(&context->http_client);
 
-    Report("Got response val %d.\n\r", lRetVal);
     flush_response(context);
 	
     if (200 <= lRetVal <= 299) {
@@ -136,7 +135,7 @@ static int flush_response(jumper_http_client_context_t * context) {
                             HTTPCli_FIELD_NAME_CONNECTION, /* App will get connection header value. all others will skip by lib */
                             NULL
                          };
-    char buf[128];
+    char buf[64];
     int id;
     int len = 1;
     bool moreFlag = 0;
@@ -144,10 +143,10 @@ static int flush_response(jumper_http_client_context_t * context) {
 
 
     /* Store previosly store array if any */
-    prevRespFilelds = HTTPCli_setResponseFields(context->http_client, ids);
+    prevRespFilelds = HTTPCli_setResponseFields(&context->http_client, ids);
 
     /* Read response headers */
-    while ((id = HTTPCli_getResponseField(context->http_client, buf, sizeof(buf), &moreFlag))
+    while ((id = HTTPCli_getResponseField(&context->http_client, buf, sizeof(buf), &moreFlag))
             != HTTPCli_FIELD_ID_END)
     {
 
@@ -162,11 +161,11 @@ static int flush_response(jumper_http_client_context_t * context) {
     }
 
     /* Restore previosuly store array if any */
-    HTTPCli_setResponseFields(context->http_client, (const char **)prevRespFilelds);
+    HTTPCli_setResponseFields(&context->http_client, (const char **)prevRespFilelds);
 
     while(1)
     {
-        HTTPCli_readResponseBody(context->http_client, buf, sizeof(buf) - 1, &moreFlag);
+        HTTPCli_readResponseBody(&context->http_client, buf, sizeof(buf) - 1, &moreFlag);
         if (len < 0) {
             return len;
         }
