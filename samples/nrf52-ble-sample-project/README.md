@@ -18,7 +18,7 @@ This sample project is the best way to get you started with Jumper Insights for 
 #### Gateway setup
 - Install Jumper's BLE Logger on your gateway:
 `sudo -H pip install https://github.com/Jumperr-labs/jumper-ble-logger/archive/0.0.21.tar.gz`
-- Create the following blank file on your gateway - `/etc/jumper_logging_agent/config.json`
+- Create the following blank file on your gateway - `/etc/jumper_ble_logger/config.json`
 #### BLE peripheral setup
 - Set the following variable `export NRF52_SDK=PATH/TO/NRF5_SDK_13.0.0` on the compiling computer
 - Compile this project: `make`
@@ -31,7 +31,7 @@ This sample project is the best way to get you started with Jumper Insights for 
 - Create a new project
 #### Connect Insight project with your gateway
 - In Insights dashboard, under Manage Projects, find your new project and click it's settings button
-- Copy the token and project ID accroding to the instructions to your gateway - `/etc/jumper_logging_agent/config.json`
+- Copy the token and project ID accroding to the instructions to your gateway - `/etc/jumper_ble_logger/config.json`
 - Note that the file should only have one `project_id` and `write_key`
 
 ### See it in Action
@@ -39,8 +39,6 @@ This sample project is the best way to get you started with Jumper Insights for 
 - Plug your nRF52 board
 #### Gateway 
 - Run `hciconfig` to see the currently connected HCI devices. In this tutorial we assume you only have `hci0` at the moment.
-- Make sure Jumper's Logging Agent is running
-`sudo service jumper-agent start`
 - Start the BLE Logger: `sudo service jumper-ble start`
 - Run `hciconfig` again to see the newly created HCI device `hci1`. We'll assume hci1 is the newly created HCI device.
 - Make sure when running `hciconfig` that both hci0 and hci1 are UP and RUNNING. If not run - `sudo hciconfig hciX up`.ning
