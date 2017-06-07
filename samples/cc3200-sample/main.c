@@ -64,17 +64,13 @@
 // Simplelink includes
 #include "simplelink.h"
 
-// Driverlib includes
+//Driverlib includes
 #include "hw_types.h"
-#include "interrupt.h"
 #include "hw_ints.h"
-#include "hw_apps_rcm.h"
-#include "hw_common_reg.h"
-#include "prcm.h"
 #include "rom.h"
 #include "rom_map.h"
-#include "hw_memmap.h"
-#include "timer.h"
+#include "interrupt.h"
+#include "prcm.h"
 #include "utils.h"
 
 //Free_rtos/ti-rtos includes
@@ -88,7 +84,6 @@
 #include "common.h"
 #include "pinmux.h"
 
-#include "ulogger.h"
 #include "ulogger_cc3200.h"
 
 #define APPLICATION_NAME        "WLAN STATION"
@@ -96,6 +91,15 @@
 
 #define HOST_NAME               "www.ti.com"
 
+
+#define DATE 6
+#define MONTH 6
+#define YEAR 2017
+#define HOUR 10
+#define MINUTE 14
+#define SECOND 22
+
+uLogger logger;
 //
 // Values for below macros shall be modified for setting the 'Ping' properties
 //
@@ -126,9 +130,7 @@ unsigned long  g_ulGatewayIP = 0; //Network Gateway IP address
 unsigned char  g_ucConnectionSSID[SSID_LEN_MAX+1]; //Connection SSID
 unsigned char  g_ucConnectionBSSID[BSSID_LEN_MAX]; //Connection BSSID
 
-uLogger logger;
-
-#if defined(ccs) || defined (gcc)
+#if defined(gcc)
 extern void (* const g_pfnVectors[])(void);
 #endif
 #if defined(ewarm)
@@ -180,7 +182,7 @@ vAssertCalled( const char *pcFile, unsigned long ulLine )
 //! \brief Application defined idle task hook
 //! 
 //! \param  none
-//! `
+//! 
 //! \return none
 //!
 //*****************************************************************************
@@ -243,17 +245,12 @@ void vApplicationStackOverflowHook( OsiTaskHandle *pxTask,
 //*****************************************************************************
 void SimpleLinkWlanEventHandler(SlWlanEvent_t *pWlanEvent)
 {
-    wlan_event_t event_metadata = {0};
     switch(pWlanEvent->Event)
     {
         case SL_WLAN_CONNECT_EVENT:
         {
             SET_STATUS_BIT(g_ulStatus, STATUS_BIT_CONNECTION);
-
-            memcpy(event_metadata.bssid, pWlanEvent->EventData.STAandP2PModeWlanConnected.ssid_name,
-                   pWlanEvent->EventData.STAandP2PModeWlanConnected.ssid_len);
-            event_metadata.is_connected = 1;
-            ulogger_log(&logger, ULOGGER_INFO, WLAN_EVENT, (void*)&event_metadata, sizeof(event_metadata));
+            
             //
             // Information about the connected AP (like name, MAC etc) will be
             // available in 'slWlanConnectAsyncResponse_t'-Applications
@@ -264,7 +261,6 @@ void SimpleLinkWlanEventHandler(SlWlanEvent_t *pWlanEvent)
             //
             
             // Copy new connection SSID and BSSID to global parameters
-
             memcpy(g_ucConnectionSSID,pWlanEvent->EventData.
                    STAandP2PModeWlanConnected.ssid_name,
                    pWlanEvent->EventData.STAandP2PModeWlanConnected.ssid_len);
@@ -290,18 +286,26 @@ void SimpleLinkWlanEventHandler(SlWlanEvent_t *pWlanEvent)
 
             pEventData = &pWlanEvent->EventData.STAandP2PModeDisconnected;
 
-            memcpy(event_metadata.bssid, pEventData->ssid_name, pEventData->ssid_len);
-            event_metadata.is_connected = 0;
-
-            ulogger_log(&logger, ULOGGER_INFO, WLAN_EVENT, (void*)&event_metadata, sizeof(event_metadata));
-
-            UART_PRINT("[WLAN ERROR]Device disconnected from the AP AP: %s,"
-            "BSSID: %x:%x:%x:%x:%x:%x on an ERROR..!! \n\r",
-                       g_ucConnectionSSID,g_ucConnectionBSSID[0],
-                       g_ucConnectionBSSID[1],g_ucConnectionBSSID[2],
-                       g_ucConnectionBSSID[3],g_ucConnectionBSSID[4],
-                       g_ucConnectionBSSID[5]);
-
+            // If the user has initiated 'Disconnect' request, 
+            //'reason_code' is SL_WLAN_DISCONNECT_USER_INITIATED_DISCONNECTION 
+            if(SL_WLAN_DISCONNECT_USER_INITIATED_DISCONNECTION == pEventData->reason_code)
+            {
+                UART_PRINT("[WLAN EVENT]Device disconnected from the AP: %s,"
+                "BSSID: %x:%x:%x:%x:%x:%x on application's request \n\r",
+                           g_ucConnectionSSID,g_ucConnectionBSSID[0],
+                           g_ucConnectionBSSID[1],g_ucConnectionBSSID[2],
+                           g_ucConnectionBSSID[3],g_ucConnectionBSSID[4],
+                           g_ucConnectionBSSID[5]);
+            }
+            else
+            {
+                UART_PRINT("[WLAN ERROR]Device disconnected from the AP AP: %s,"
+                "BSSID: %x:%x:%x:%x:%x:%x on an ERROR..!! \n\r",
+                           g_ucConnectionSSID,g_ucConnectionBSSID[0],
+                           g_ucConnectionBSSID[1],g_ucConnectionBSSID[2],
+                           g_ucConnectionBSSID[3],g_ucConnectionBSSID[4],
+                           g_ucConnectionBSSID[5]);
+            }
             memset(g_ucConnectionSSID,0,sizeof(g_ucConnectionSSID));
             memset(g_ucConnectionBSSID,0,sizeof(g_ucConnectionBSSID));
         }
@@ -436,7 +440,7 @@ void SimpleLinkSockEventHandler(SlSockEvent_t *pSock)
             break;
 
         default:
-            UART_PRINT("[SOCK EVENT] - Unexpected Event [%x0x]\n\n",pSock->Event);
+        	UART_PRINT("[SOCK EVENT] - Unexpected Event [%x0x]\n\n",pSock->Event);
           break;
     }
 
@@ -782,28 +786,21 @@ static long WlanConnect()
     return SUCCESS;
    
 }
-#include "device.h"
 
-static int set_time()
-{
-    long retVal;
-    SlDateTime_t time;
-    time.sl_tm_day = 17;
-    time.sl_tm_mon = 5;
-    time.sl_tm_year = 2017;
-    time.sl_tm_sec = 15;
-    time.sl_tm_hour = 11;
-    time.sl_tm_min = 45;
+static void set_datetime() {
+    SlDateTime_t dt;
 
-    retVal = sl_DevSet(SL_DEVICE_GENERAL_CONFIGURATION,
+     /* Set current Date to validate certificate */
+     dt.sl_tm_day = DATE;
+     dt.sl_tm_mon = MONTH;
+     dt.sl_tm_year = YEAR;
+     dt.sl_tm_hour = HOUR;
+     dt.sl_tm_min = MINUTE;
+     dt.sl_tm_sec = SECOND;
+     sl_DevSet(SL_DEVICE_GENERAL_CONFIGURATION,
                           SL_DEVICE_GENERAL_CONFIGURATION_DATE_TIME,
-                          sizeof(SlDateTime_t),(unsigned char *)(&time));
-
-    ASSERT_ON_ERROR(retVal);
-    return SUCCESS;
+                                 sizeof(SlDateTime_t), (unsigned char *)(&dt));
 }
-
-
 
 //****************************************************************************
 //
@@ -835,7 +832,6 @@ void WlanStationMode( void *pvParameters )
     // Note that all profiles and persistent settings that were done on the
     // device will be lost
     //
-    UART_PRINT("Starting station mode\n\r");
     lRetVal = ConfigureSimpleLinkToDefaultState();
     if(lRetVal < 0)
     {
@@ -859,9 +855,10 @@ void WlanStationMode( void *pvParameters )
         UART_PRINT("Failed to start the device \n\r");
         LOOP_FOREVER();
     }
-    ULOGGER_LOG(&logger, ULOGGER_INFO, DEVICE_STARTED_EVENT);
+    set_datetime();
+    ulogger_init_cc3200(&logger);
     UART_PRINT("Device started as STATION \n\r");
-
+    ULOGGEER_LOG_STRING(&logger, ULOGGER_INFO, DEVICE_BOOT_EVENT, APPLICATION_VERSION);
     //
     //Connecting to WLAN AP
     //
@@ -878,27 +875,25 @@ void WlanStationMode( void *pvParameters )
     //
     // Checking the Lan connection by pinging to AP gateway
     //
-    lRetVal = CheckLanConnection();
+    /*lRetVal = CheckLanConnection();
     if(lRetVal < 0)
     {
         UART_PRINT("Device couldn't ping the gateway \n\r");
         LOOP_FOREVER();
-    }
-    set_time();
+    }*/
+    
     // Turn on GREEN LED when device gets PING response from AP
     GPIO_IF_LedOn(MCU_EXECUTE_SUCCESS_IND);
 
     //
     // Checking the internet connection by pinging to external host
     //
-    /*
-    lRetVal = CheckInternetConnection();
+    /*lRetVal = CheckInternetConnection();
     if(lRetVal < 0)
     {
         UART_PRINT("Device couldn't ping the external host \n\r");
         LOOP_FOREVER();
-    }
-*/
+    }*/
 
     // Turn on ORAGE LED when device gets PING response from AP
     GPIO_IF_LedOn(MCU_ORANGE_LED_GPIO);
@@ -906,9 +901,12 @@ void WlanStationMode( void *pvParameters )
     UART_PRINT("Device pinged both the gateway and the external host \n\r");
 
     UART_PRINT("WLAN STATION example executed successfully \n\r");
+
     while (1) {
-      osi_Sleep(2000);
+        osi_Sleep(5000);
+        UART_PRINT("Still alive\n");
     }
+    
 }
 //*****************************************************************************
 //
@@ -976,13 +974,21 @@ void main()
     //
     BoardInit();
     
+    //
+    // configure the GPIO pins for LEDs,UART
+    //
     PinMuxConfig();
 
+    //
+    // Configure the UART
+    //
 #ifndef NOTERM
     InitTerm();
 #endif  //NOTERM
     
-    ulogger_init_cc3200(&logger);
+    //
+    // Display Application Banner
+    //
     DisplayBanner(APPLICATION_NAME);
     
     //
