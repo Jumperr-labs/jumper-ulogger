@@ -3,7 +3,7 @@
 static struct HTTPCli_SecureParams sparams = {
     .method = SL_SO_SEC_METHOD_SSLv3_TLSV1_2,
     .mask = SL_SEC_MASK_TLS_DHE_RSA_WITH_AES_256_CBC_SHA,
-    .cafile = "/cert/our_ca.cer",
+    .cafile = "/cert/jmpr_ca_cert.cer",
     .privkey = {0}, 
     .cert = {0}, 
     .dhkey = {0}
@@ -26,7 +26,6 @@ http_client_result_t http_client_send_event(jumper_http_client_context_t * conte
         return result;
     }
 
-    //TODO disconnect
     return HTTP_CLIENT_OK;
 }
 
