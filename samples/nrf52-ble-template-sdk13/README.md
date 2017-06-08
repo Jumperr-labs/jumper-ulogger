@@ -1,0 +1,1 @@
+Note: This template project is meant to work with the nRF52 SDK v13, for using with SDK v12 go to "nrf52-ble-template-sdk12.3"

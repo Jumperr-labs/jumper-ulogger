@@ -50,11 +50,11 @@ fi
 # NRF52 SAMPLE PROJECT
 # ========================================================
 nrf52_sample_dir_src=${repo_dir}/samples/nrf52-ble-sample-project
-nrf52_sample_dir_dest=${out_dir}/nrf52-ble-sasmple-project
+nrf52_sample_dir_dest=${out_dir}/nrf52-ble-sample-project
 if [ -z $version ] ; then
-    nrf52_sample_zip=${out_dir}/nrf52-ble-sasmple-project.zip
+    nrf52_sample_zip=${out_dir}/nrf52-ble-sample-project.zip
 else
-    nrf52_sample_zip=${out_dir}/nrf52-ble-sasmple-project-${version}.zip
+    nrf52_sample_zip=${out_dir}/nrf52-ble-sample-project-${version}.zip
 fi
 nrf52_sample_ulogger_dir=${nrf52_sample_dir_dest}/${nrf52_package_dir_name}
 

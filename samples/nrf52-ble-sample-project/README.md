@@ -51,6 +51,6 @@ This sample project is the best way to get you started with Jumper Insights for 
 - Go to your project's dashboard on https://app-events.jumper.io/ .
 
 ### Want More?
-Check out our support for [nRF52](https://github.com/Jumperr-labs/jumper-ulogger/tree/master/platforms/nrf52) and the [nrf52-ble-template project](https://github.com/Jumperr-labs/jumper-ulogger/tree/master/samples/nrf52-ble-template) to implement this on your own project.
+Check out our support for [nRF52](https://github.com/Jumperr-labs/jumper-ulogger/tree/master/platforms/nrf52) and the [nrf52-ble-template project](https://github.com/Jumperr-labs/jumper-ulogger/tree/master/samples/nrf52-ble-template-sdk13) to integrate this for your own project.
 
 We are happy to help! Feel free to contact us about any issue and give us your feedback at [info@jumper.io](mailto:info@jumper.io)
