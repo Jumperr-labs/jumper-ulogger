@@ -1462,7 +1462,7 @@
 #endif
 
 // <q> PWM3_ENABLED  - Enable PWM3 instance
- 
+
 
 #ifndef PWM3_ENABLED
 #define PWM3_ENABLED 0
@@ -2829,7 +2829,7 @@
 #endif
 #if  UART1_ENABLED
 // <q> UART1_CONFIG_USE_EASY_DMA  - Default setting for using EasyDMA
- 
+
 
 #ifndef UART1_CONFIG_USE_EASY_DMA
 #define UART1_CONFIG_USE_EASY_DMA 1
@@ -3571,7 +3571,7 @@
 // <e> NRF_LOG_ENABLED - nrf_log - Logging
 //==========================================================
 #ifndef NRF_LOG_ENABLED
-#define NRF_LOG_ENABLED 0
+#define NRF_LOG_ENABLED 1
 #endif
 #if  NRF_LOG_ENABLED
 // <e> NRF_LOG_USES_COLORS - If enabled then ANSI escape code for colors is prefixed to every string
