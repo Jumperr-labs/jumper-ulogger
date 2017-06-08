@@ -278,7 +278,7 @@ static int gatt_handler_logging_timer_start(network_log_config * config, uint32_
     }
 
     ret_code_t ret_code; 
-    ret_code = app_timer_start(send_log_timer, APP_TIMER_TICKS(time_in_ms)  , (void *)config);
+    ret_code = app_timer_start(send_log_timer, TICKS(time_in_ms)  , (void *)config);
     if (ret_code) {
         NRF_LOG_INFO("Failed to create timer\n");
         return ret_code;

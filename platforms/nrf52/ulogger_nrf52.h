@@ -11,8 +11,6 @@
 #include "trace_nrf52.h"
 #include "ble.h"
 
-#define ULOGGER_RTC 2
-
 uLogger ulogger;
 
 /**
