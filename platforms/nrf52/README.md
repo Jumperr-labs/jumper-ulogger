@@ -86,5 +86,3 @@ You can edit either of these options, depending on the number of log events you 
 The configuration option are:
 * `GATT_BUFFER_SIZE` - Buffer size in bytes, currently defaults to 200.
 * `LOG_SEND_PERIOD_MS` - Period between sending the logging buffer to the gateway, currently defaults to 5000 ms.
-
-Inside _"ulogger_nrf52.h"_, you will notice this line: `#define ULOGGER_RTC 2`. This will set which RTC is being used for creating timestamps. You should avoid using this RTC in your code.
