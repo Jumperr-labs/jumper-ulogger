@@ -40,3 +40,9 @@ typedef struct {
 
 ## Porting
 Check out our [porting guide](https://github.com/Jumperr-labs/jumper-ulogger/blob/master/porting.md)
+
+## Contribute
+Feel free to open issues and send us your pull requests.
+
+## Contact Us
+We are happy to help! Feel free to contact us about any issue and give us your feedback at [info@jumper.io](mailto:info@jumper.io)
