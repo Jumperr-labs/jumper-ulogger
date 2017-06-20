@@ -7,7 +7,7 @@
 
 
 #define PACK_EVENT_TYPE(buf, type) \
-        (buf) += sprintf((buf), "\"event\": \"%s\", ", #type)
+        (buf) += sprintf((buf), "\"type\": \"%s\", ", #type)
 
 
 int json_formatter_format(void * formatter_context, uLoggerEventHeader * event,
@@ -27,14 +27,35 @@ int json_formatter_format(void * formatter_context, uLoggerEventHeader * event,
     PACK_NAME_AND_MAC_ADDRESS(buf, "device_id", mac_address);
     switch (event->event_type) {
         case DEVICE_BOOT_EVENT:
-            PACK_EVENT_TYPE(buf, DEVICE_STARTED_EVENT);
-            break;
+        {
+            PACK_EVENT_TYPE(buf, DEVICE_BOOT_EVENT);
+            PACK_STRING(buf, "version", additional_data);
+        }
+        break;
+        case ULOGGER_BATTERY_EVENT:
+        {
+            battery_state_event_data_t * battery = (battery_state_event_data_t *) additional_data;
+            PACK_EVENT_TYPE(buf, ULOGGER_BATTERY_EVENT);
+            PACK_NAME_AND_INT(buf, battery, level);
+        }
+        break;
         case WLAN_EVENT:
         {
             wlan_event_t * event_metadata = (wlan_event_t *) additional_data;
             PACK_EVENT_TYPE(buf, WLAN_EVENT);
             PACK_NAME_AND_INT(buf, event_metadata, is_connected);
             PACK_NAME_AND_STRING(buf, event_metadata, bssid);
+        }
+        break;
+        case CC3XXX_PING_REPORT:
+        {
+            SlPingReport_t * ping_report = (SlPingReport_t *) additional_data;
+            PACK_EVENT_TYPE(buf, CC3XXX_PING_REPORT);
+            PACK_NAME_AND_INT(buf, ping_report, PacketsSent);
+            PACK_NAME_AND_INT(buf, ping_report, PacketsReceived);
+            PACK_NAME_AND_INT(buf, ping_report, MinRoundTime);
+            PACK_NAME_AND_INT(buf, ping_report, MaxRoundTime);
+            PACK_NAME_AND_INT(buf, ping_report, AvgRoundTime);
         }
         break;
         default:

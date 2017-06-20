@@ -30,6 +30,8 @@
 #define PACK_NAME_AND_INT(buf, obj, param) \
         (buf) += sprintf((buf), "\"%s\": %d, ", #param, (obj)->param)
 
+#define PACK_STRING(buf, name, string) \
+        (buf) += sprintf((buf), "\"%s\": \"%s\", ", name, string)
 
 #define PACK_NAME_AND_STRING(buf, obj, param) \
         (buf) += sprintf((buf), "\"%s\": \"%s\", ", #param, (obj)->param)
