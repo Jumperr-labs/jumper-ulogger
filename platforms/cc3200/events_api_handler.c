@@ -2,36 +2,36 @@
 #include "ulogger.h"
 #include "network_log_handler.h"
 #include "http_client.h"
-#include "keen_client.h"
 #include "logging_config.h"
 #include "common.h"
 #include "json_encoding_helper.h"
 
-char *api_version = JUMPER_API_VERSION;
-char *project_id = JUMPER_PROJECT_ID;
-char *write_key = JUMPER_WRITE_KEY;
-
 extern uint32_t g_ulStatus;
 
 #undef send
-
+static jumper_http_client_context_t http_context = {0};
 static int events_api_handler_send(void * network_context, uint8_t * data, uint32_t length);
 static bool events_api_handler_can_send(void * network_context);
 static int events_api_handler_timer_start(network_log_config * config);
 
 int events_api_handler_init(network_log_config * config, uint8_t * event_buffer, size_t event_buffer_size, json_formatter_context * context, uint8_t * encoding_buffer, size_t encoding_buffer_size) {
+    http_client_init(&http_context);
+
     context->buffer = encoding_buffer;
     context->buffer_length = encoding_buffer_size;
 
     config->log_send_period = API_HANDLER_LOG_SEND_PERIOD;
-    config->context = (void *) NULL;
+    config->context = (void *) &http_context;
     config->send = events_api_handler_send;
     config->can_send = events_api_handler_can_send;
     config->callback = netowork_logger_periodic_callback;
     config->formatter_context = context;
     config->format_method = json_formatter_format;
     network_logger_init(config, event_buffer, event_buffer_size);
-    events_api_handler_timer_start(config); 
+    
+    if (events_api_handler_timer_start(config)) {
+        return -1;
+    }
     
     return 0;
 }
@@ -41,7 +41,11 @@ static bool events_api_handler_can_send(void * network_context) {
 }
 
 static int events_api_handler_send(void * network_context, uint8_t * data, uint32_t length) {
-    int error_code = add_events(data);
+
+    jumper_http_client_context_t * config = (jumper_http_client_context_t *) network_context;
+    http_client_result_t error_code = http_client_send_event(config, data, length);
+
+//http_client_result_t http_client_send_event(jumper_http_client_context_t * context, char * data, uint32_t data_length);
     UART_PRINT("Sending data....... %d\n", error_code);
     return error_code;
 }
@@ -61,6 +65,8 @@ HandlerReturnType events_api_handler_handle_log(void * handler_data, LogLevel le
 
 
 static int events_api_handler_timer_start(network_log_config * config) {
-    osi_TaskCreate(periodic_caller, (const signed char*)"Send Buffer Task",EVENTS_API_HANDLER_STACK_SIZE ,(void*)config, 1, NULL);
-    return 0;
+    if (osi_TaskCreate(periodic_caller, (const signed char*)"Send Buffer Task",EVENTS_API_HANDLER_STACK_SIZE ,(void*)config, 1, NULL) == OSI_OK) {
+        return 0;
+    }
+    return -1;
 }

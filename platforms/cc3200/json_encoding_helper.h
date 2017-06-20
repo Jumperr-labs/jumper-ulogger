@@ -6,14 +6,14 @@
 #ifndef JSON_ENCODING_HELPER_H
 #define JSON_ENCODING_HELPER_H
 
-#define START_ARRAY(buf, name) \
+#define START_ARRAY(buf) \
     do { \
-        (buf)+= sprintf((buf), "\"%s\": [", name); \
+        (buf)+= sprintf((buf), "["); \
     } while(0);
 
 #define END_ARRAY(buf) \
     do { \
-        (buf)+= sprintf((buf), "], "); \
+        (buf)+= sprintf((buf), "]"); \
     } while(0);
 
 #define START_OBJECT(buf) \
@@ -41,5 +41,5 @@
 
 #endif //JSON_ENCODING_HELPER_H
 /**
-/* @}
+ * @}
  */
